@@ -28,6 +28,7 @@
     <main>
         <section id="product-list">
             <h2>Chapéus Disponíveis</h2>
+            <label for="search-hat" class="sr-only">Pesquisar chapéu</label>
             <input type="text" id="search-hat" placeholder="Pesquisar chapéu..." style="margin-bottom: 1rem; width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
             <div id="hats" class="hats-grid"></div>
         </section>
@@ -36,7 +37,7 @@
     <div id="cart-sidebar" class="cart-sidebar">
         <div class="cart-header">
             <h2>Seu Carrinho</h2>
-            <button id="close-cart" class="close-cart">&times;</button>
+            <button id="close-cart" class="close-cart" aria-label="Fechar carrinho">&times;</button>
         </div>
         <div id="cart-items" class="cart-items"></div>
         <div id="total-amount" class="cart-total"></div>
@@ -46,7 +47,7 @@
     <div id="pedidos-sidebar" class="pedidos-sidebar">
         <div class="pedidos-header">
             <h2>Meus Pedidos</h2>
-            <button id="close-pedidos" class="close-pedidos">&times;</button>
+            <button id="close-pedidos" class="close-pedidos" aria-label="Fechar consulta de pedidos">&times;</button>
         </div>
         <form id="consulta-form" class="consulta-form">
             <label for="cpf-consulta">Informe seu CPF:</label>
