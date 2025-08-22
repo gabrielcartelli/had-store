@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Finalizar Pedido - Had Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .checkout-container {
+            max-width: 520px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #2563eb22;
+            padding: 2rem 2.5rem;
+        }
+        .checkout-container h2 {
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .checkout-form label {
+            font-weight: 500;
+            color: #2563eb;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        .checkout-form input,
+        .checkout-form select {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            border: 1px solid #bcd0ee;
+            font-size: 1rem;
+        }
+        .checkout-form button {
+            width: 100%;
+            background: #2563eb;
+            color: #fff;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.2s;
+        }
+        .checkout-form button:hover {
+            background: #1e40af;
+        }
+        .pedido-resumo {
+            background: #f3f6fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .pedido-resumo h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .pedido-resumo ul {
+            padding-left: 1.2rem;
+        }
+        .pagamento-info {
+            background: #e0e7ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .pagamento-info pre {
+            background: #fff;
+            padding: 0.7rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            margin: 0.5rem 0 0 0;
+            color: #2563eb;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="checkout-container">
+            <h2>Finalizar Pedido</h2>
+            <div class="pedido-resumo" id="pedido-resumo"></div>
+            <form id="checkout-form" class="checkout-form">
+                <label for="nome">Nome completo:</label>
+                <input type="text" id="nome" required placeholder="Seu nome">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" required placeholder="seu@email.com">
+                <label for="pagamento">Forma de pagamento:</label>
+                <select id="pagamento" required>
+                    <option value="">Selecione</option>
+                    <option value="pix">PIX</option>
+                    <option value="boleto">Boleto</option>
+                </select>
+                <button type="submit">Finalizar compra</button>
+            </form>
+            <div id="resultado"></div>
+        </div>
+    </main>
+    <script src="js/checkout.js"></script>
+</body>
+</html>

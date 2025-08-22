@@ -12,14 +12,11 @@
             <img src="imagens/logo-hadstore.png" alt="Had Store" class="logo-header" />
             <div>
                 <h1 class="titulo-header">Had Store</h1>
-                <p class="slogan-header">Seu destino para todos os estilos de chapéus!</p>
+                <p class="slogan-header">Sua loja para todos os estilos de chapéus!</p>
             </div>
         </div>
-        <nav class="nav-header">
-            <a href="#product-list">Chapéus</a>
-            <a href="#shopping-cart">Carrinho</a>
-            <a href="#">Contato</a>
-        </nav>
+        <!-- Botão do carrinho no canto direito -->
+        <button id="cart-menu-button" class="hamburger-menu" style="position: absolute; top: 1.5rem; right: 2rem;">&#9776; Carrinho</button>
     </header>
     <main>
         <section id="product-list">
@@ -27,13 +24,17 @@
             <input type="text" id="search-hat" placeholder="Pesquisar chapéu..." style="margin-bottom: 1rem; width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
             <div id="hats" class="hats-grid"></div>
         </section>
-        <aside id="shopping-cart">
-            <h2>Seu Carrinho</h2>
-            <div id="cart-items"></div>
-            <div id="total-amount"></div>
-            <button id="checkout-button">Finalizar Compra</button>
-        </aside>
     </main>
+    <!-- Sidebar do carrinho -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Seu Carrinho</h2>
+            <button id="close-cart" class="close-cart">&times;</button>
+        </div>
+        <div id="cart-items" class="cart-items"></div>
+        <div id="total-amount" class="cart-total"></div>
+        <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
+    </div>
     <footer>
         <p>&copy; 2025 Had Store</p>
     </footer>

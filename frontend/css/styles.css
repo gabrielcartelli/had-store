@@ -217,3 +217,116 @@ footer {
     background: var(--azul-tema);
     color: #e0e7ff;
 }
+
+/* Botão do menu hambúrguer no nav */
+.hamburger-menu {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.2s;
+}
+
+.hamburger-menu:hover {
+    background: #1e40af;
+}
+
+/* Sidebar do carrinho */
+.cart-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 340px;
+    background: #fff;
+    box-shadow: -2px 0 12px rgba(37,99,235,0.15);
+    z-index: 9999;
+    transition: right 0.3s ease-in-out;
+    padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.cart-sidebar.open {
+    right: 0;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e7ff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.cart-header h2 {
+    font-size: 1.4rem;
+    color: #2563eb;
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #e11d48;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-cart:hover {
+    color: #9f1239;
+}
+
+.cart-items {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+}
+
+.cart-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: right;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkout-button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin: 0;
+    margin-bottom: 3cm; /* Adiciona espaço acima do rodapé */
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.cart-empty-message {
+    text-align: center;
+    color: #222;
+    font-weight: normal;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+}
+
+.cart-item-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 0.7rem;
+    background: #eee;
+    display: inline-block;
+    vertical-align: middle;
+}

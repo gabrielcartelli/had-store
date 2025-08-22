@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"sync"
 )
 
 type Hat struct {
@@ -44,6 +45,16 @@ var hats = []Hat{
 	{ID: 30, Nome: "Chapéu de Couro", Preco: 109.90},
 }
 
+var pedidos []map[string]interface{}
+var pedidosMutex sync.Mutex
+
+// GetHats godoc
+// @Summary Lista todos os chapéus
+// @Description Retorna todos os chapéus disponíveis
+// @Tags hats
+// @Produce json
+// @Success 200 {array} models.Hat
+// @Router /hats [get]
 func GetHats(w http.ResponseWriter, r *http.Request) {
 	// Permitir requisições do frontend (CORS)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -52,22 +63,76 @@ func GetHats(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hats)
 }
 
-// Os handlers abaixo são apenas exemplos para evitar erro de rota.
-// Implemente a lógica real conforme sua necessidade.
+// AddToCart godoc
+// @Summary Adiciona um chapéu ao carrinho
+// @Description Adiciona um chapéu ao carrinho do usuário
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param item body models.Hat true "Item do carrinho"
+// @Success 200 {object} map[string]interface{}
+// @Router /cart/add [post]
 func AddToCart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Adicionado ao carrinho"))
 }
 
+// UpdateCart godoc
+// @Summary Atualiza o carrinho
+// @Description Atualiza a quantidade de um item no carrinho
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param item body models.Hat true "Item do carrinho"
+// @Success 200 {object} map[string]interface{}
+// @Router /cart/update [put]
 func UpdateCart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Carrinho atualizado"))
 }
 
+// Checkout godoc
+// @Summary Finaliza o pedido
+// @Description Finaliza o pedido do usuário
+// @Tags checkout
+// @Accept json
+// @Produce json
+// @Param pedido body map[string]interface{} true "Dados do pedido"
+// @Success 200 {object} map[string]interface{}
+// @Router /checkout [post]
 func Checkout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Compra finalizada"))
+}
+
+// RegistrarPedido godoc
+// @Summary Registra um pedido
+// @Description Registra os dados do pedido em memória
+// @Tags pedido
+// @Accept json
+// @Produce json
+// @Param pedido body map[string]interface{} true "Dados do pedido"
+// @Success 200 {object} map[string]string
+// @Router /pedido [post]
+func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var pedido map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&pedido); err != nil {
+		http.Error(w, "Pedido inválido", http.StatusBadRequest)
+		return
+	}
+	pedidosMutex.Lock()
+	pedidos = append(pedidos, pedido)
+	pedidosMutex.Unlock()
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }

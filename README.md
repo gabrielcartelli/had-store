@@ -1,50 +1,84 @@
-# Hat Store Training Program
+# Had Store
 
-Welcome to the Hat Store Training Program! This project is designed to help quality analysts understand the functionality of a hat store application, including product listings, shopping cart operations, and checkout processes.
+Este é um projeto de loja de chapéus desenvolvido em Go (backend) e JavaScript/HTML/CSS (frontend).
 
-## Project Structure
+## Como rodar localmente
 
-The project is divided into two main components: **backend** and **frontend**.
+1. **Clone o repositório**
+   ```sh
+   git clone <url-do-repositorio>
+   ```
 
-### Backend
+2. **Backend**
+   - Entre na pasta `backend`
+   - Instale as dependências:
+     ```sh
+     go mod tidy
+     ```
+   - Rode o servidor:
+     ```sh
+     go run main.go
+     ```
+   - O backend roda na porta `8080` por padrão.
 
-The backend is developed in Go and includes the following files:
+3. **Frontend**
+   - Os arquivos estão na pasta `frontend`.
+   - Abra o arquivo `index.html` em seu navegador para testar a interface.
 
-- **main.go**: The entry point of the application that initializes the server and sets up routes.
-- **handlers/hats.go**: Contains functions to handle HTTP requests related to hats, including listing hats, adding to the cart, updating the cart, and processing checkout.
-- **models/hat.go**: Defines the Hat struct, representing a hat product with properties like ID, Name, Price, and Description.
-- **routes/routes.go**: Sets up the API endpoints for the application.
+## Deploy no Fly.io
 
-### Frontend
+1. Instale o Fly CLI:
+   ```sh
+   iwr https://fly.io/install.ps1 -useb | iex
+   ```
+2. Configure o app:
+   ```sh
+   fly launch
+   ```
+3. Faça o deploy:
+   ```sh
+   fly deploy
+   ```
 
-The frontend is developed using HTML, CSS, and JavaScript and includes the following files:
+## Estrutura do projeto
 
-- **index.html**: The main HTML file that structures the webpage and links to CSS and JavaScript files.
-- **css/styles.css**: Contains styles for the frontend application, defining layout, colors, and fonts.
-- **js/app.js**: Handles user interactions, including adding hats to the cart, updating quantities, and managing the checkout process.
+```
+backend/      # Código Go do servidor e API
+frontend/     # Código do site (HTML, CSS, JS, imagens)
+Dockerfile    # Configuração para deploy containerizado
+fly.toml      # Configuração do Fly.io
+```
 
-## Setup Instructions
+## Funcionalidades
 
-### Backend
+- Listagem de chapéus
+- Pesquisa de chapéus
+- Carrinho individual por usuário (localStorage)
+- Menu lateral (hambúrguer) para o carrinho
+- Finalização de compra com registro do pedido
+- Suporte a PIX e Boleto (códigos fictícios)
 
-1. Navigate to the `backend` directory.
-2. Run `go run main.go` to start the server.
-3. The API will be available at `http://localhost:8080`.
+## Documentação da API (Swagger)
 
-### Frontend
+A API possui documentação automática via Swagger.
 
-1. Open `frontend/index.html` in a web browser.
-2. The application will display the product listing and allow users to interact with the shopping cart.
+- Gere a documentação com:
+  ```sh
+  swag init
+  ```
+- Acesse em produção:
+  ```
+  https://had-store.fly.dev/swagger/
+  ```
+- Os endpoints principais estão descritos e podem ser testados diretamente pela interface.
 
-## Usage
+## Como contribuir
 
-- Users can browse the available hats, add them to their shopping cart, adjust quantities, and proceed to checkout.
-- Payment methods include Pix and boleto.
+1. Faça um fork do projeto
+2. Crie uma branch (`git checkout -b minha-feature`)
+3. Faça suas alterações
+4. Envie um pull request
 
-## Contributing
+---
 
-Feel free to contribute to the project by submitting issues or pull requests. Your feedback and improvements are welcome!
-
-## License
-
-This project is licensed under the MIT License.
+Had

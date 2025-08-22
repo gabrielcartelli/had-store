@@ -25,6 +25,7 @@ func InitializeRoutes() *mux.Router {
 	router.HandleFunc("/cart/add", handlers.AddToCart).Methods("POST")
 	router.HandleFunc("/cart/update", handlers.UpdateCart).Methods("PUT")
 	router.HandleFunc("/checkout", handlers.Checkout).Methods("POST")
+	router.HandleFunc("/pedido", handlers.RegistrarPedido).Methods("POST", "OPTIONS")
 
 	return router
 }
