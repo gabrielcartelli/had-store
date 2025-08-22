@@ -6,15 +6,35 @@ import (
 	"sync"
 )
 
+// Estrutura do chapéu (mantida)
 type Hat struct {
 	ID    int     `json:"id"`
 	Nome  string  `json:"nome"`
 	Preco float64 `json:"preco"`
 }
 
+// Estrutura do pedido
+type Pedido struct {
+	Nome      string      `json:"nome"`
+	CPF       string      `json:"cpf"`
+	Email     string      `json:"email"`
+	Pagamento string      `json:"pagamento"`
+	Itens     []HatPedido `json:"itens"`
+	Total     float64     `json:"total"`
+}
+
+// Estrutura dos itens do pedido
+type HatPedido struct {
+	ID         int     `json:"id"`
+	Nome       string  `json:"nome"`
+	Preco      float64 `json:"preco"`
+	Quantidade int     `json:"quantidade"`
+}
+
+// Variável global para armazenar chapéus (mantida)
 var hats = []Hat{
-	{ID: 1, Nome: "Chapéu Panamá", Preco: 99.90},
-	{ID: 2, Nome: "Chapéu Fedora", Preco: 89.90},
+	{ID: 1, Nome: "Chapéu Panamá", Preco: 120.00},
+	{ID: 2, Nome: "Chapéu Fedora", Preco: 150.00},
 	{ID: 3, Nome: "Chapéu Bucket", Preco: 49.90},
 	{ID: 4, Nome: "Chapéu Cowboy", Preco: 109.90},
 	{ID: 5, Nome: "Chapéu Floppy", Preco: 79.90},
@@ -45,16 +65,13 @@ var hats = []Hat{
 	{ID: 30, Nome: "Chapéu de Couro", Preco: 109.90},
 }
 
-var pedidos []map[string]interface{}
-var pedidosMutex sync.Mutex
+// Variável global para armazenar pedidos
+var (
+	pedidos     []Pedido
+	pedidosLock sync.Mutex
+)
 
-// GetHats godoc
-// @Summary Lista todos os chapéus
-// @Description Retorna todos os chapéus disponíveis
-// @Tags hats
-// @Produce json
-// @Success 200 {array} models.Hat
-// @Router /hats [get]
+// Handler para listar chapéus (mantido)
 func GetHats(w http.ResponseWriter, r *http.Request) {
 	// Permitir requisições do frontend (CORS)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -114,25 +131,45 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 // @Tags pedido
 // @Accept json
 // @Produce json
-// @Param pedido body map[string]interface{} true "Dados do pedido"
+// @Param pedido body Pedido true "Dados do pedido"
 // @Success 200 {object} map[string]string
 // @Router /pedido [post]
 func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	if r.Method == "OPTIONS" {
-		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.WriteHeader(http.StatusOK)
+	var pedido Pedido
+	err := json.NewDecoder(r.Body).Decode(&pedido)
+	if err != nil {
+		http.Error(w, "Dados inválidos", http.StatusBadRequest)
 		return
 	}
-	var pedido map[string]interface{}
-	if err := json.NewDecoder(r.Body).Decode(&pedido); err != nil {
-		http.Error(w, "Pedido inválido", http.StatusBadRequest)
-		return
-	}
-	pedidosMutex.Lock()
+
+	pedidosLock.Lock()
 	pedidos = append(pedidos, pedido)
-	pedidosMutex.Unlock()
+	pedidosLock.Unlock()
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+	json.NewEncoder(w).Encode(map[string]string{
+		"mensagem": "Pedido registrado com sucesso",
+	})
+}
+
+// Handler para consultar pedidos por CPF
+func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
+	cpf := r.URL.Query().Get("cpf")
+	if cpf == "" {
+		http.Error(w, "CPF não informado", http.StatusBadRequest)
+		return
+	}
+
+	pedidosLock.Lock()
+	defer pedidosLock.Unlock()
+
+	var pedidosFiltrados []Pedido
+	for _, pedido := range pedidos {
+		if pedido.CPF == cpf {
+			pedidosFiltrados = append(pedidosFiltrados, pedido)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(pedidosFiltrados)
 }

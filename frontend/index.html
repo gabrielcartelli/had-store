@@ -16,7 +16,12 @@
             </div>
         </div>
         <!-- Botão do carrinho no canto direito -->
-        <button id="cart-menu-button" class="hamburger-menu" style="position: absolute; top: 1.5rem; right: 2rem;">&#9776; Carrinho</button>
+        <button id="cart-menu-button" class="cart-menu-btn">
+            <img src="imagens/cart.svg" alt="Carrinho" />
+        </button>
+        <button id="pedidos-menu-button" class="consultar-pedidos-btn">
+            Consultar meus pedidos
+        </button>
     </header>
     <main>
         <section id="product-list">
@@ -34,6 +39,19 @@
         <div id="cart-items" class="cart-items"></div>
         <div id="total-amount" class="cart-total"></div>
         <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
+    </div>
+    <!-- Menu lateral dos pedidos -->
+    <div id="pedidos-sidebar" class="pedidos-sidebar">
+        <div class="pedidos-header">
+            <h2>Meus Pedidos</h2>
+            <button id="close-pedidos" class="close-pedidos">&times;</button>
+        </div>
+        <form id="consulta-form" class="consulta-form">
+            <label for="cpf-consulta">Informe seu CPF:</label>
+            <input type="text" id="cpf-consulta" required placeholder="Seu CPF" style="width:100%;margin-bottom:1rem;">
+            <button type="submit" style="width:100%;">Consultar</button>
+        </form>
+        <div id="pedidos-list" class="pedidos-list"></div>
     </div>
     <footer>
         <p>&copy; 2025 Had Store</p>

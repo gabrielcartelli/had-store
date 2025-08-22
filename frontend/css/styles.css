@@ -330,3 +330,93 @@ footer {
     display: inline-block;
     vertical-align: middle;
 }
+
+.pedidos-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 340px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -2px 0 12px rgba(37,99,235,0.15);
+    z-index: 9999;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.pedidos-sidebar.open {
+    right: 0;
+}
+
+.pedidos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.close-pedidos {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #2563eb;
+    cursor: pointer;
+}
+
+.consulta-form label {
+    font-weight: 500;
+    color: #2563eb;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+.consulta-form input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    border: 1px solid #bcd0ee;
+    font-size: 1rem;
+}
+
+.consulta-form button {
+    width: 100%;
+    background: #2563eb;
+    color: #fff;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background 0.2s;
+}
+
+.pedidos-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.pedido-card {
+    background: #f3f6fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px #2563eb11;
+}
+
+.pedido-card strong {
+    color: #2563eb;
+}
+
+.pedido-itens {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pedido-itens li {
+    font-size: 0.95rem;
+}
