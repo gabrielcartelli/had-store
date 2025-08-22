@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function carregarChapeus() {
-    fetch('http://localhost:8080/hats')
+    fetch('/api/hats')
         .then(response => response.json())
         .then(hats => {
             todosChapeus = hats;
