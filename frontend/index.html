@@ -2,45 +2,84 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Had Store</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header class="main-header">
         <div class="header-content">
-            <img src="imagens/logo-hadstore.png" alt="Had Store" class="logo-header" />
-            <h1 class="titulo-header">Had Store</h1>
-            <span class="slogan-header">Seu estilo começa pela cabeça</span>
+            <a href="index.html" style="display:flex;align-items:center;gap:1rem;text-decoration:none;">
+                <img src="imagens/logo-hadstore.png" alt="Had Store" class="logo-header" />
+                <div class="header-titles">
+                    <h1 class="titulo-header">Had Store</h1>
+                    <span class="slogan-header">Seu estilo começa pela cabeça</span>
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="index.html" class="header-link">Home</a>
+                <a href="pedidos.html" class="header-link">Meus Pedidos</a>
+            </nav>
+        </div>
+        <div class="header-bar">
+            <span class="header-bar-item">Frete grátis acima de R$ 200</span>
+            <span class="header-bar-item">Compra segura</span>
+            <span class="header-bar-item">Suporte 24h</span>
         </div>
     </header>
-    <main>
-        <section id="product-list">
-            <h2>Chapéus Disponíveis</h2>
-            <label for="search-hat" class="sr-only">Pesquisar chapéu</label>
-            <input type="text" id="search-hat" placeholder="Pesquisar chapéu..." style="margin-bottom: 1rem; width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
-            <div id="hats" class="hats-grid"></div>
+    <div class="promo-banner">
+        <span class="promo-text">
+            <strong>Promoção:</strong> Ganhe 10% OFF no primeiro pedido! Use o cupom <span class="cupom">HAD10</span>
+        </span>
+    </div>
+    <main style="display: flex; align-items: flex-start;">
+        <section style="flex: 1;">
+            <div style="margin:2rem 0 1rem 2rem;">
+                <input type="text" id="search-hat" placeholder="Buscar chapéu..." style="width:60%;padding:0.7rem;border-radius:8px;border:1px solid #bcd0ee;font-size:1rem;">
+            </div>
+            <div id="hats"></div>
         </section>
         <aside class="sidebar-actions">
-            <button id="cart-menu-button" class="cart-menu-btn">Carrinho</button>
-            <button id="pedidos-menu-button" class="consultar-pedidos-btn">Consultar meus pedidos</button>
+            <button id="cart-menu-button" class="cart-menu-btn" title="Abrir carrinho">Carrinho</button>
+            <button id="pedidos-menu-button" class="consultar-pedidos-btn" title="Consultar pedidos">Meus pedidos</button>
         </aside>
     </main>
+    <!-- Loader animado -->
+    <div id="loader" class="loader" style="display:none;">
+        <div class="spinner"></div>
+        <span>Carregando...</span>
+    </div>
+    <!-- Modal genérico -->
+    <div id="modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modal-title"></h2>
+            <div id="modal-body"></div>
+        </div>
+    </div>
     <!-- Sidebar do carrinho -->
     <div id="cart-sidebar" class="cart-sidebar">
         <div class="cart-header">
-            <h2>Seu Carrinho</h2>
-            <button id="close-cart" class="close-cart" aria-label="Fechar carrinho">&times;</button>
+            <h2>Carrinho</h2>
+            <button id="close-cart" class="close-cart">&times;</button>
         </div>
-        <div id="cart-items" class="cart-items"></div>
-        <div id="total-amount" class="cart-total"></div>
-        <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
+        <div id="cart-items"></div>
+        <div id="total-amount"></div>
+        <!-- Layout do cupom no carrinho, com mensagem de sucesso embaixo do input -->
+        <div class="carrinho-cupom" style="background:#232323;border-radius:10px;padding:1.2em;margin-bottom:1em;display:flex;flex-direction:column;align-items:flex-start;gap:0.7em;">
+            <label for="cupom" style="color:#c9a94b;font-weight:bold;margin-bottom:0.2em;">Cupom de desconto:</label>
+            <div style="display:flex;align-items:center;gap:1em;">
+                <input type="text" id="cupom" name="cupom" maxlength="20" placeholder="Digite o cupom" style="border-radius:6px;border:1px solid #c9a94b;padding:0.5em 1em;background:#181818;color:#fff;width:140px;">
+                <button type="button" id="aplicar-cupom" style="background:#c9a94b;color:#232323;border:none;border-radius:6px;padding:0.5em 1.2em;font-weight:bold;cursor:pointer;">Aplicar</button>
+            </div>
+            <span class="input-error" id="erro-cupom" style="margin-top:0.5em;"></span>
+        </div>
+        <button id="checkout-button" class="checkout-button">Finalizar compra</button>
     </div>
-    <!-- Menu lateral dos pedidos -->
+    <!-- Sidebar de pedidos -->
     <div id="pedidos-sidebar" class="pedidos-sidebar">
         <div class="pedidos-header">
             <h2>Meus Pedidos</h2>
-            <button id="close-pedidos" class="close-pedidos" aria-label="Fechar consulta de pedidos">&times;</button>
+            <button id="close-pedidos" class="close-pedidos">&times;</button>
         </div>
         <form id="consulta-form" class="consulta-form">
             <label for="cpf-consulta">Informe seu CPF:</label>
@@ -49,9 +88,6 @@
         </form>
         <div id="pedidos-list" class="pedidos-list"></div>
     </div>
-    <footer>
-        <p>&copy; 2025 Had Store</p>
-    </footer>
     <script src="js/app.js"></script>
 </body>
 </html>

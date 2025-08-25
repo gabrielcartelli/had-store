@@ -83,44 +83,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    consultaForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const cpf = document.getElementById('cpf-consulta').value.trim();
-        if (!cpf) return;
+    // Consulta de pedidos
+    if (consultaForm) {
+        consultaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const cpf = document.getElementById('cpf-consulta').value.trim();
+            if (!cpf) return;
 
-        pedidosListDiv.innerHTML = "<p>Buscando pedidos...</p>";
+            document.getElementById('pedidos-list').innerHTML = "<p>Buscando pedidos...</p>";
 
-        fetchComUUID(`/api/pedidos?cpf=${encodeURIComponent(cpf)}`)
-            .then(res => res.json())
-            .then(pedidos => {
-                pedidosListDiv.innerHTML = '';
-                if (!pedidos || pedidos.length === 0) {
-                    pedidosListDiv.innerHTML = "<p>Nenhum pedido encontrado para este CPF.</p>";
-                    return;
-                }
-                pedidos.forEach(pedido => {
-                    const card = document.createElement('div');
-                    card.className = 'pedido-card';
-                    card.innerHTML = `
-                        <strong>Pedido:</strong> ${pedido.nome}<br>
-                        <strong>CPF:</strong> ${pedido.cpf}<br>
-                        <strong>E-mail:</strong> ${pedido.email}<br>
-                        <strong>Pagamento:</strong> ${pedido.pagamento}<br>
-                        <strong>Total:</strong> R$ ${pedido.total.toFixed(2)}
-                        <div class="pedido-itens">
-                            <strong>Itens:</strong>
-                            <ul>
-                                ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
-                            </ul>
-                        </div>
-                    `;
-                    pedidosListDiv.appendChild(card);
+            fetchComUUID(`/api/pedidos?cpf=${encodeURIComponent(cpf)}`)
+                .then(res => res.json())
+                .then(pedidos => {
+                    const pedidosDiv = document.getElementById('pedidos-list');
+                    pedidosDiv.innerHTML = '';
+                    if (!pedidos || pedidos.length === 0) {
+                        pedidosDiv.innerHTML = "<p>Nenhum pedido encontrado para este CPF.</p>";
+                        return;
+                    }
+                    pedidos.forEach(pedido => {
+                        const card = document.createElement('div');
+                        card.className = 'pedido-card';
+                        card.innerHTML = `
+                            <strong>Pedido:</strong> ${pedido.nome}<br>
+                            <strong>CPF:</strong> ${pedido.cpf}<br>
+                            <strong>E-mail:</strong> ${pedido.email}<br>
+                            <strong>Pagamento:</strong> ${pedido.pagamento}<br>
+                            <strong>Total:</strong> R$ ${pedido.total.toFixed(2)}
+                            <div class="pedido-itens">
+                                <strong>Itens:</strong>
+                                <ul>
+                                    ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                        pedidosDiv.appendChild(card);
+                    });
+                })
+                .catch(() => {
+                    document.getElementById('pedidos-list').innerHTML = "<p>Erro ao consultar pedidos.</p>";
                 });
-            })
-            .catch(() => {
-                pedidosListDiv.innerHTML = "<p>Erro ao consultar pedidos.</p>";
-            });
-    });
+        });
+
+        // Máscara para CPF da consulta
+        if (window.jQuery && window.jQuery.fn.mask) {
+            $('#cpf-consulta').mask('000.000.000-00');
+        } else {
+            // Carrega jQuery e jQuery Mask se não estiverem presentes
+            const jq = document.createElement('script');
+            jq.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";
+            jq.onload = function() {
+                const mask = document.createElement('script');
+                mask.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js";
+                mask.onload = function() {
+                    $('#cpf-consulta').mask('000.000.000-00');
+                };
+                document.body.appendChild(mask);
+            };
+            document.body.appendChild(jq);
+        }
+    }
+
+    // Cupom no carrinho
+    const cupomInput = document.getElementById('cupom');
+    const aplicarCupomBtn = document.getElementById('aplicar-cupom');
+    const erroCupom = document.getElementById('erro-cupom');
+    if (cupomInput && aplicarCupomBtn && erroCupom) {
+        aplicarCupomBtn.onclick = function() {
+            const cupom = cupomInput.value.trim().toUpperCase();
+            if (cupom) {
+                localStorage.setItem('cupom', cupom);
+                erroCupom.textContent = "Cupom aplicado!";
+                erroCupom.classList.remove('input-error');
+                erroCupom.classList.add('cupom-sucesso');
+            } else {
+                erroCupom.textContent = "Digite um cupom válido.";
+                erroCupom.classList.remove('cupom-sucesso');
+                erroCupom.classList.add('input-error');
+            }
+        };
+    }
 });
 
 function carregarChapeus() {
@@ -229,7 +271,32 @@ function atualizarCarrinho() {
         `;
         cartDiv.appendChild(itemDiv);
     });
-    totalDiv.innerHTML = `<span style="font-size:1.1rem;font-weight:bold;">Total: R$ ${total.toFixed(2)}</span>`;
+
+    // Cupom de desconto
+    const cupom = (localStorage.getItem('cupom') || '').toUpperCase();
+    let desconto = 0;
+    let descontoHtml = '';
+    let totalComDesconto = total;
+
+    if (cupom === 'HAD10') {
+        desconto = total * 0.10;
+        totalComDesconto = total - desconto;
+        descontoHtml = `
+            <div class="cart-cupom-info" style="color:#22c55e;font-weight:bold;margin-top:0.5em;">
+                Cupom HAD10 aplicado: -R$ ${desconto.toFixed(2)}
+            </div>
+        `;
+    }
+
+    totalDiv.innerHTML = `
+        <div style="font-size:1rem;">
+            <span style="color:#888;">Subtotal:</span> <span style="font-weight:bold;">R$ ${total.toFixed(2)}</span>
+        </div>
+        ${descontoHtml}
+        <div style="font-size:1.1rem;font-weight:bold;margin-top:0.5em;">
+            Total com desconto: R$ ${totalComDesconto.toFixed(2)}
+        </div>
+    `;
     checkoutBtn.style.display = 'block';
 }
 
@@ -241,3 +308,55 @@ document.getElementById('checkout-button').addEventListener('click', () => {
     }
     window.location.href = "checkout.html";
 });
+
+// Loader functions
+function showLoader() {
+    document.getElementById('loader').style.display = 'flex';
+}
+function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
+}
+
+// Modal functions
+function openModal(title, bodyHtml) {
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const modal = document.getElementById('modal');
+    if (modalTitle && modalBody && modal) {
+        modalTitle.innerText = title;
+        modalBody.innerHTML = bodyHtml;
+        modal.style.display = 'flex';
+    }
+}
+function closeModal() {
+    const modal = document.getElementById('modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Exemplo de uso do loader e modal em uma chamada de API
+function buscarChapeus() {
+    showLoader();
+    fetchComUUID('/api/hats')
+        .then(res => res.json())
+        .then(hats => {
+            hideLoader();
+            // Renderize os chapéus normalmente
+            // ...
+        })
+        .catch(() => {
+            hideLoader();
+            openModal("Erro", "<p>Não foi possível carregar os chapéus.</p>");
+        });
+}
+
+// Exemplo de uso do modal para detalhes do produto
+function mostrarDetalhesChapeu(chapeu) {
+    openModal(
+        chapeu.nome,
+        `<img src="imagens/chapeu-${chapeu.id}.jpg" style="width:120px;border-radius:10px;margin-bottom:1rem;">
+         <p>Preço: <strong>R$ ${chapeu.preco.toFixed(2)}</strong></p>
+         <p>Descrição: Chapéu estiloso para todas as ocasiões.</p>`
+    );
+}
+
+// Adicione animações extras conforme desejar nos eventos JS

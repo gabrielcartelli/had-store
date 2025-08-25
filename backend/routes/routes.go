@@ -39,6 +39,7 @@ func InitializeRoutes() *mux.Router {
 	router.HandleFunc("/hats", handlers.GetHats).Methods("GET")
 	router.HandleFunc("/pedido", handlers.RegistrarPedido).Methods("POST", "OPTIONS")
 	router.HandleFunc("/pedidos", handlers.ConsultarPedidos).Methods("GET")
+	router.HandleFunc("/api/pedidos", handlers.CriarPedido).Methods("POST")
 
 	return router
 }
