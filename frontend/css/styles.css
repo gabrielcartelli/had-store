@@ -192,7 +192,7 @@ footer {
 .slogan-header {
     font-size: 1.1rem;
     margin: 0.2rem 0 0 0;
-    color: #e0e7ff;
+    color: #fff;
     font-style: italic;
 }
 
@@ -454,4 +454,24 @@ footer {
 .cart-menu-btn:hover,
 .consultar-pedidos-btn:hover {
     background: #1e40af;
+}
+
+/* Classe para esconder conteúdo visualmente, mas mantê-lo para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Estilo customizado para indicador de foco para usuários de teclado */
+:is(a, button, input, select):focus-visible {
+    outline: 3px solid var(--azul-tema-claro);
+    outline-offset: 2px;
+    border-radius: 4px; /* Opcional, para deixar o contorno mais suave */
 }
