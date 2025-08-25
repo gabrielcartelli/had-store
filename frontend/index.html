@@ -7,30 +7,22 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header class="header-elaborado">
-        <div class="header-container">
+    <header class="main-header">
+        <div class="header-content">
             <img src="imagens/logo-hadstore.png" alt="Had Store" class="logo-header" />
-            <div>
-                <h1 class="titulo-header">Had Store</h1>
-                <p class="slogan-header">Sua loja para todos os estilos de chapéus!</p>
-            </div>
-        </div>
-        <div class="header-actions">
-            <!-- Botão do carrinho no canto direito -->
-            <button id="cart-menu-button" class="cart-menu-btn">
-                <img src="imagens/cart.svg" alt="Carrinho" /> Carrinho
-            </button>
-            <button id="pedidos-menu-button" class="consultar-pedidos-btn">
-                Consultar meus pedidos
-            </button>
+            <h1 class="titulo-header">Had Store</h1>
+            <span class="slogan-header">Seu estilo começa pela cabeça</span>
         </div>
     </header>
-    <main>
-        <section id="product-list">
-            <h2>Chapéus Disponíveis</h2>
-            <input type="text" id="search-hat" placeholder="Pesquisar chapéu..." style="margin-bottom: 1rem; width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
+    <main style="display: flex; align-items: flex-start;">
+        <section style="flex: 1;">
+            <!-- Aqui ficam os produtos/chapeus -->
             <div id="hats" class="hats-grid"></div>
         </section>
+        <aside class="sidebar-actions">
+            <button id="cart-menu-button" class="cart-menu-btn">Carrinho</button>
+            <button id="pedidos-menu-button" class="consultar-pedidos-btn">Consultar meus pedidos</button>
+        </aside>
     </main>
     <!-- Sidebar do carrinho -->
     <div id="cart-sidebar" class="cart-sidebar">

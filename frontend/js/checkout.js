@@ -70,14 +70,64 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data) {
-                    alert(data.mensagem || "Pedido realizado com sucesso!");
                     localStorage.removeItem('carrinho');
-                    window.location.href = "index.html";
+                    exibirCodigoPagamento(pagamento);
                 }
             })
             .catch(() => {
                 alert("Erro ao finalizar pedido.");
             });
         });
+    }
+
+    function exibirCodigoPagamento(metodo) {
+        // Gera um código fictício
+        let codigo = "";
+        if (metodo === "pix") {
+            codigo = "00020126580014BR.GOV.BCB.PIX0136b1e1f2e3d4c5b6a7f8e9d0c1b2a3f4g5h6i7j8k9l5204000053039865405120.005802BR5920Had Store6009SAO PAULO61080540900062070503***6304ABCD";
+        } else if (metodo === "boleto") {
+            codigo = "34191.79001 01043.510047 91020.150008 7 92180011000";
+        } else {
+            codigo = "Código não disponível";
+        }
+
+        // Cria o modal
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.35)';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.zIndex = '99999';
+
+        modal.innerHTML = `
+            <div style="background:#fff;padding:2rem 2.5rem;border-radius:14px;box-shadow:0 2px 16px #2563eb33;max-width:420px;text-align:center;">
+                <h2 style="color:#2563eb;margin-bottom:1.2rem;">Pagamento ${metodo === "pix" ? "PIX" : "Boleto"}</h2>
+                <p style="margin-bottom:0.7rem;">Utilize o código abaixo para realizar o pagamento:</p>
+                <pre id="codigo-pagamento" style="background:#f3f6fa;padding:1rem;border-radius:8px;font-size:1.1rem;word-break:break-all;margin-bottom:1.2rem;">${codigo}</pre>
+                <button id="copiar-codigo" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:0.7rem 1.2rem;font-size:1rem;cursor:pointer;margin-bottom:1rem;">Copiar código</button>
+                <br>
+                <button id="fechar-modal" style="background:#e0e7ff;color:#2563eb;border:none;border-radius:8px;padding:0.7rem 1.2rem;font-size:1rem;cursor:pointer;">Fechar</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById('copiar-codigo').onclick = function() {
+            const texto = document.getElementById('codigo-pagamento').innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                this.innerText = "Copiado!";
+                setTimeout(() => { this.innerText = "Copiar código"; }, 1500);
+            });
+        };
+
+        document.getElementById('fechar-modal').onclick = function() {
+            document.body.removeChild(modal);
+            window.location.href = "index.html";
+        };
     }
 });

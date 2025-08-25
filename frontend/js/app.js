@@ -217,17 +217,14 @@ function atualizarCarrinho() {
         itemDiv.className = 'cart-item';
         itemDiv.innerHTML = `
             <div class="cart-item-info">
-                <img src="imagens/chapeu-${item.id}.jpg" alt="${item.nome}" onerror="this.src='imagens/default.jpg'">
-                <div>
-                    <strong>${item.nome}</strong><br>
-                    <span>R$ ${item.preco.toFixed(2)}</span>
+                <span class="cart-item-nome">${item.nome}</span>
+                <span class="cart-item-preco">R$ ${item.preco.toFixed(2)}</span>
+                <div class="cart-item-actions">
+                    <button onclick="alterarQuantidade(${item.id}, -1)" title="Diminuir">-</button>
+                    <span>${item.quantidade}</span>
+                    <button onclick="alterarQuantidade(${item.id}, 1)" title="Aumentar">+</button>
+                    <button onclick="removerDoCarrinho(${item.id})" title="Remover" class="remove-btn">&#10006;</button>
                 </div>
-            </div>
-            <div class="cart-item-actions">
-                <button onclick="alterarQuantidade(${item.id}, -1)" title="Diminuir">-</button>
-                <span>${item.quantidade}</span>
-                <button onclick="alterarQuantidade(${item.id}, 1)" title="Aumentar">+</button>
-                <button onclick="removerDoCarrinho(${item.id})" title="Remover" class="remove-btn">&#10006;</button>
             </div>
         `;
         cartDiv.appendChild(itemDiv);

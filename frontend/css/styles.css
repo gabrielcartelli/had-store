@@ -171,29 +171,36 @@ footer {
     margin: auto;
 }
 
+.main-header {
+    width: 100%;
+    background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+    padding: 1.2rem 0 1.7rem 0;
+    box-shadow: 0 2px 12px #2563eb22;
+}
+
 .logo-header {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
     background: #fff;
+    box-shadow: 0 2px 8px #2563eb22;
     object-fit: cover;
-    box-shadow: 0 2px 8px rgba(30,64,175,0.10);
 }
 
 .titulo-header {
-    font-size: 2.2rem;
-    margin: 0;
-    letter-spacing: 2px;
+    font-size: 2.1rem;
     font-weight: bold;
     color: #fff;
-    text-shadow: 1px 2px 8px var(--azul-tema-escuro);
+    margin: 0;
+    letter-spacing: 1px;
 }
 
 .slogan-header {
     font-size: 1.1rem;
-    margin: 0.2rem 0 0 0;
     color: #e0e7ff;
+    margin-left: auto;
     font-style: italic;
+    font-weight: 500;
 }
 
 .nav-header {
@@ -320,15 +327,21 @@ footer {
     font-size: 0.95rem;
 }
 
-.cart-item-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    object-fit: cover;
-    margin-right: 0.7rem;
-    background: #eee;
-    display: inline-block;
-    vertical-align: middle;
+.cart-item-info {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.cart-item-nome {
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+
+.cart-item-preco {
+    margin-left: 0.5rem;
+    color: #2563eb;
+    font-weight: bold;
 }
 
 .pedidos-sidebar {
@@ -424,34 +437,42 @@ footer {
 /* Estiliza os botões do topo para ficarem lado a lado e alinhados à direita */
 .header-actions {
     display: flex;
+    flex-direction: column;
     gap: 0.7rem;
-    justify-content: flex-end;
     align-items: center;
-    margin-bottom: 1.2rem;
+    margin: 1.2rem auto 0 auto;
+    width: 100%;
+    max-width: 320px;
 }
 
+/* Botões só com texto */
 .cart-menu-btn,
 .consultar-pedidos-btn {
     background: #2563eb;
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 0.6rem 1.1rem;
-    font-size: 1.05rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.cart-menu-btn img {
-    width: 24px;
-    height: 24px;
+    width: 160px;
+    min-height: 48px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .cart-menu-btn:hover,
 .consultar-pedidos-btn:hover {
     background: #1e40af;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-top: 2rem;
+    min-width: 180px;
 }
