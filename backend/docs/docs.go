@@ -15,6 +15,110 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Loga um usuário com email e senha e retorna um token JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Autentica um usuário",
+                "parameters": [
+                    {
+                        "description": "Credenciais de Login",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token JWT",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Email ou senha inválidos",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Muitas tentativas de login",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Cria uma nova conta de usuário com email e senha",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Registra um novo usuário",
+                "parameters": [
+                    {
+                        "description": "Credenciais de Registro",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso!",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Usuário já existe",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/cart/add": {
             "post": {
                 "description": "Adiciona um chapéu ao carrinho do usuário",
@@ -121,29 +225,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/hats": {
-            "get": {
-                "description": "Retorna todos os chapéus disponíveis",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "hats"
-                ],
-                "summary": "Lista todos os chapéus",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Hat"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/pedido": {
             "post": {
                 "description": "Registra os dados do pedido em memória",
@@ -164,8 +245,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/handlers.Pedido"
                         }
                     }
                 ],
@@ -184,20 +264,88 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Hat": {
+        "handlers.HatPedido": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "name": {
+                "nome": {
+                    "type": "string"
+                },
+                "preco": {
+                    "type": "number"
+                },
+                "quantidade": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handlers.Pedido": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "itens": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.HatPedido"
+                    }
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "pagamento": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.Hat": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nome": {
                     "type": "string"
                 },
                 "price": {
                     "type": "number"
+                },
+                "quantidade": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "rememberMe": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.RegisterRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }
