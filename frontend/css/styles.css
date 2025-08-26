@@ -595,3 +595,465 @@ body {
     color: #22c55e; /* verde sucesso */
     font-weight: bold;
 }
+
+/* ============================================= */
+/*          ESTILOS DE AUTENTICAÇÃO              */
+/* ============================================= */
+
+.auth-container {
+    max-width: 420px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: var(--cor-card);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px #c9a94b44;
+    color: var(--cor-prata);
+}
+
+.auth-container h2 {
+    text-align: center;
+    color: var(--cor-dourado);
+    margin-bottom: 1.5rem;
+}
+
+.auth-form-group {
+    margin-bottom: 1.2rem;
+}
+
+.auth-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--cor-dourado);
+}
+
+.auth-form-group input {
+    width: 100%;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: var(--cor-input);
+    color: var(--cor-prata);
+    font-size: 1rem;
+}
+
+/* Já existe uma regra :focus-visible global, mas podemos especializar se necessário */
+.auth-form-group input:focus-visible {
+    outline: 2px solid var(--cor-dourado);
+    outline-offset: 2px;
+}
+
+.auth-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--cor-dourado);
+    color: var(--cor-btn-text);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1rem;
+}
+
+.auth-button:hover {
+    background: var(--cor-btn-hover);
+}
+
+.auth-toggle-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--cor-prata);
+}
+
+/* Estilo para os botões que parecem links */
+.auth-toggle-link button {
+    background: none;
+    border: none;
+    color: var(--cor-dourado);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    font-family: inherit; /* Garante que use a mesma fonte do resto */
+}
+
+/* Região para mensagens de erro/sucesso, acessível */
+.auth-message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    display: none; /* Escondido por padrão */
+}
+
+.auth-message.success {
+    background-color: #22c55e33; /* verde com transparência */
+    color: #22c55e;
+}
+
+.auth-message.error {
+    background-color: #e11d4833; /* vermelho com transparência */
+    color: #e11d48;
+}
+
+/* Estilo para o botão de logout no header, para que ele se pareça com os outros links */
+#logout-button.header-link {
+    font-family: inherit;
+    font-size: 1.08rem;
+    font-weight: 500;
+    color: var(--cor-prata);
+    padding: 0.4rem 1rem;
+}
+
+#logout-button.header-link:hover {
+    background: var(--cor-dourado);
+    color: var(--cor-btn-text);
+}
+
+/* ============================================= */
+/*          ESTILOS DA PÁGINA DE CHECKOUT         */
+/* ============================================= */
+
+.checkout-bg {
+    min-height: calc(100vh - 200px); /* Ajusta a altura mínima para descontar o header */
+    background: linear-gradient(120deg, #fff 60%, #f6f6f6 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    animation: fadeInBg 1s;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+@keyframes fadeInBg {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.checkout-horizontal {
+    display: flex;
+    gap: 2.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 3rem auto;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+/* Adicionado para envolver as colunas do formulário */
+.checkout-form-container {
+    display: contents; /* Faz com que este form não tenha estilo próprio, mas seus filhos sim */
+}
+
+.checkout-col {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px #c9a94b22, 0 2px 16px #23232322;
+    padding: 2rem;
+    min-width: 260px;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    animation: popCheckout 0.7s;
+}
+
+@keyframes popCheckout {
+    from { transform: scale(0.93) translateY(40px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.checkout-col h3 {
+    color: #c9a94b;
+    margin-bottom: 0.7rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.checkout-col label {
+    font-weight: 500;
+    color: #c9a94b;
+    margin-bottom: 0.2rem;
+    display: block;
+    font-size: 1.07rem;
+    letter-spacing: 0.5px;
+    margin-top: 0.7rem;
+}
+
+.checkout-col input,
+.checkout-col select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 1.08rem;
+    background: #f6f6f6;
+    color: #444;
+    margin-bottom: 0.2rem;
+    transition: box-shadow 0.2s;
+    box-shadow: 0 2px 8px #c9a94b11;
+    outline: none;
+}
+
+.checkout-col input:focus,
+.checkout-col select:focus {
+    box-shadow: 0 2px 16px #c9a94b33;
+    border-color: #c9a94b;
+}
+
+/* --- Seção de Pagamento --- */
+
+.pagamento-opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+}
+
+.pagamento-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(90deg, #f6f6f6 60%, #e5e7eb 100%);
+    border: 2px solid #c9a94b;
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #c9a94b11;
+    outline: none;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pagamento-btn.selected,
+.pagamento-btn:hover {
+    background: linear-gradient(90deg, #fff 60%, #c9a94b22 100%);
+    border: 2px solid #a88a2c;
+    box-shadow: 0 4px 16px #c9a94b33;
+    color: #c9a94b;
+}
+
+.pagamento-btn img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    background: none;
+    border-radius: 8px;
+    border: none;
+    box-shadow: none;
+}
+
+/* --- Botão de Finalizar Compra --- */
+
+.checkout-form-btn {
+    margin-top: 1.5rem;
+    background: linear-gradient(90deg, #c9a94b 60%, #a88a2c 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 1.1rem 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 16px #c9a94b33;
+    transition: background 0.2s, box-shadow 0.2s;
+    letter-spacing: 1px;
+    width: 100%;
+}
+
+.checkout-form-btn:hover {
+    background: linear-gradient(90deg, #a88a2c 0%, #c9a94b 100%);
+    box-shadow: 0 4px 24px #c9a94b44;
+}
+
+/* --- Resumo do Pedido --- */
+
+.pedido-resumo-horizontal {
+    background: #f6f6f6;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px #c9a94b11;
+    padding: 2.2rem 2.5rem;
+    min-width: 320px;
+    max-width: 340px;
+    font-size: 1.08rem;
+    color: #444;
+    animation: fadeInResumo 1.1s;
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: fit-content;
+}
+
+@keyframes fadeInResumo {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pedido-resumo-horizontal strong {
+    color: #c9a94b;
+}
+
+.pedido-resumo-horizontal ul {
+    list-style: none; /* Remove bolinhas da lista para um visual mais limpo */
+    margin: 0.7rem 0 0.7rem 0;
+    padding: 0;
+    width: 100%;
+}
+
+.pedido-resumo-horizontal li {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.pedido-resumo-horizontal .pedido-total {
+    margin-top: 1.2rem;
+    font-size: 1.18rem;
+    font-weight: bold;
+    color: #c9a94b;
+    width: 100%;
+    text-align: right;
+}
+
+.pedido-desconto {
+    color: #22c55e;
+    font-weight: bold;
+    margin-top: 0.5em;
+    width: 100%;
+    text-align: right;
+}
+
+
+/* --- Media Queries para Responsividade --- */
+
+@media (max-width: 1100px) {
+    .checkout-horizontal {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+    /* Inverte a ordem no mobile para o resumo aparecer primeiro */
+    .pedido-resumo-horizontal {
+        order: -1;
+    }
+}
+
+@media (max-width: 900px) {
+    .checkout-col,
+    .pedido-resumo-horizontal {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+
+/* ============================================= */
+/*          ESTILOS DA PÁGINA DE PEDIDOS         */
+/* ============================================= */
+
+.container-principal {
+    padding: 2rem 1rem;
+}
+
+.consulta-pedidos-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+    color: #374151; /* Cor de texto mais escura para melhor contraste */
+}
+
+.consulta-pedidos-container h2 {
+    color: var(--cor-dourado); /* Usando a paleta de cores do tema */
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.consulta-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.consulta-form .consulta-input {
+    flex-grow: 1; /* Faz o input ocupar o espaço disponível */
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.consulta-form .consulta-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--cor-dourado);
+    color: var(--cor-btn-text);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.consulta-form .consulta-button:hover {
+    background: var(--cor-btn-hover);
+}
+
+.pedidos-list .pedido-card {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.pedidos-list .pedido-card p {
+    margin: 0 0 0.5rem 0;
+}
+
+.pedidos-list .pedido-card strong {
+    color: #111827; /* Cor mais escura para o texto em negrito */
+}
+
+.pedidos-list .pedido-itens {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #ccc;
+}
+
+.pedidos-list .pedido-itens ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.pedidos-list .pedido-itens li {
+    font-size: 0.95rem;
+    color: #4b5563;
+    padding: 0.25rem 0;
+}

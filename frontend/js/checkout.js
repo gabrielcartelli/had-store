@@ -1,287 +1,241 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const API_UUID = "e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d";
-
-    function solicitarUUID() {
-        let uuid = localStorage.getItem("api_uuid");
-        while (uuid !== API_UUID) {
-            uuid = prompt("Informe o código de acesso:");
-            if (uuid === null) {
-                document.body.innerHTML = "<h2 style='color:#e11d48;text-align:center;margin-top:3rem;'>Acesso bloqueado.</h2>";
-                throw new Error("Acesso bloqueado.");
-            }
-            localStorage.setItem("api_uuid", uuid);
-        }
+    //
+    // PROTEÇÃO DA PÁGINA E CONFIGURAÇÃO INICIAL
+    //
+    const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+    
+    // Se não estiver logado, redireciona para o login
+    if (!localStorage.getItem('jwt_token')) {
+        alert('Você precisa estar logado para finalizar a compra.');
+        window.location.href = 'auth.html';
+        return; // Impede a execução do resto do script
     }
-    solicitarUUID();
-
-    function fetchComUUID(url, options = {}) {
-        if (!options.headers) options.headers = {};
-        options.headers["X-API-UUID"] = localStorage.getItem("api_uuid");
-        return fetch(url, options);
+    
+    // Se o carrinho estiver vazio, redireciona para a página inicial
+    if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio.');
+        window.location.href = 'index.html';
+        return; // Impede a execução do resto do script
     }
+    
+    // Monta o resumo do pedido na tela
+    montarResumoPedido(carrinho);
+    
+    // Aplica máscaras aos inputs do formulário
+    aplicarMascaras();
 
+    
+    //
+    // EVENT LISTENERS DO FORMULÁRIO
+    //
     const form = document.getElementById('checkout-form');
     if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // CORREÇÃO: impede o submit padrão do formulário
-            let valid = true;
+        form.addEventListener('submit', handleFormSubmit);
+    }
+    
+    // Lógica para seleção dos botões de pagamento
+    const btnPix = document.getElementById('btn-pix');
+    const btnBoleto = document.getElementById('btn-boleto');
+    if (btnPix && btnBoleto) {
+        btnPix.addEventListener('click', () => selectPagamento('pix'));
+        btnBoleto.addEventListener('click', () => selectPagamento('boleto'));
+    }
+});
 
-            // Limpa erros anteriores
-            document.querySelectorAll('.input-error').forEach(span => span.textContent = '');
-            document.querySelectorAll('.input-invalid').forEach(input => input.classList.remove('input-invalid'));
 
-            // Dados pessoais
-            const nome = document.getElementById('nome');
-            if (!nome.value || nome.value.length < 3) {
-                nome.classList.add('input-invalid');
-                document.getElementById('erro-nome').textContent = 'Digite seu nome completo';
-                valid = false;
-            }
+//
+// FUNÇÕES PRINCIPAIS
+//
 
-            const cpf = document.getElementById('cpf');
-            if (!cpf.value.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) {
-                cpf.classList.add('input-invalid');
-                document.getElementById('erro-cpf').textContent = 'CPF inválido. Formato: 000.000.000-00';
-                valid = false;
-            }
+function montarResumoPedido(itens) {
+    const pedidoResumoDiv = document.getElementById('pedido-resumo');
+    if (!pedidoResumoDiv) return;
+    
+    const cupom = (localStorage.getItem('cupom') || '').toUpperCase();
+    let total = 0;
+    
+    // Cria a lista de itens
+    let itensHtml = itens.map(item => {
+        total += item.preco * (item.quantidade || 1);
+        return `<li>${item.nome} (${item.quantidade || 1}x) - <strong>R$ ${item.preco.toFixed(2)}</strong></li>`;
+    }).join('');
 
-            const email = document.getElementById('email');
-            if (!email.value.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) {
-                email.classList.add('input-invalid');
-                document.getElementById('erro-email').textContent = 'Digite um e-mail válido';
-                valid = false;
-            }
+    let descontoHtml = '';
+    let totalComDesconto = total;
 
-            const telefone = document.getElementById('telefone');
-            if (!telefone.value.match(/^\(\d{2}\) \d{5}-\d{4}$/)) {
-                telefone.classList.add('input-invalid');
-                document.getElementById('erro-telefone').textContent = 'Telefone inválido. Formato: (99) 99999-9999';
-                valid = false;
-            }
+    // Aplica o desconto se o cupom for válido
+    if (cupom === "HAD10") {
+        const desconto = total * 0.10;
+        totalComDesconto -= desconto;
+        descontoHtml = `<div class="pedido-desconto">Cupom HAD10: -R$ ${desconto.toFixed(2)}</div>`;
+    }
 
-            // Endereço
-            const endereco = document.getElementById('endereco');
-            if (!endereco.value) {
-                endereco.classList.add('input-invalid');
-                document.getElementById('erro-endereco').textContent = 'Preencha a rua';
-                valid = false;
-            }
+    // Monta o HTML final do resumo
+    pedidoResumoDiv.innerHTML = `
+        <strong>Resumo do pedido:</strong>
+        <ul>${itensHtml}</ul>
+        ${descontoHtml}
+        <div class="pedido-total"><strong>Total:</strong> R$ ${totalComDesconto.toFixed(2)}</div>
+    `;
+}
 
-            const numero = document.getElementById('numero');
-            if (!numero.value.match(/^\d+$/)) {
-                numero.classList.add('input-invalid');
-                document.getElementById('erro-numero').textContent = 'Digite apenas números';
-                valid = false;
-            }
+async function handleFormSubmit(event) {
+    event.preventDefault();
 
-            const bairro = document.getElementById('bairro');
-            if (!bairro.value) {
-                bairro.classList.add('input-invalid');
-                document.getElementById('erro-bairro').textContent = 'Preencha o bairro';
-                valid = false;
-            }
+    // 1. Valida o formulário
+    if (!validarFormulario()) {
+        alert('Por favor, corrija os campos inválidos.');
+        return;
+    }
 
-            const cep = document.getElementById('cep');
-            if (!cep.value.match(/^\d{5}-\d{3}$/)) {
-                cep.classList.add('input-invalid');
-                document.getElementById('erro-cep').textContent = 'CEP inválido. Formato: 00000-000';
-                valid = false;
-            }
+    // 2. Monta o objeto do pedido
+    const pedido = montarObjetoPedido();
 
-            const cidade = document.getElementById('cidade');
-            if (!cidade.value) {
-                cidade.classList.add('input-invalid');
-                document.getElementById('erro-cidade').textContent = 'Preencha a cidade';
-                valid = false;
-            }
-
-            const uf = document.getElementById('uf');
-            if (!uf.value.match(/^[A-Za-z]{2}$/)) {
-                uf.classList.add('input-invalid');
-                document.getElementById('erro-uf').textContent = 'Digite a sigla do estado (ex: SP)';
-                valid = false;
-            }
-
-            // Pagamento
-            const pagamentoInput = document.getElementById('pagamento');
-            if (!pagamentoInput.value) {
-                document.getElementById('erro-pagamento').textContent = 'Selecione a forma de pagamento.';
-                valid = false;
-            }
-
-            if (!valid) {
-                // Não exibe alert, apenas mensagens nos inputs
-                return;
-            }
-
-            const nomeValue = nome.value;
-            const cpfValue = cpf.value;
-            const emailValue = email.value;
-            const pagamentoValue = pagamentoInput.value;
-
-            const cupomInput = document.getElementById('cupom');
-            const cupomValue = localStorage.getItem('cupom') || "";
-
-            const pedidoMemoria = window.localStorage.getItem('carrinho');
-            const carrinho = pedidoMemoria ? JSON.parse(pedidoMemoria) : [];
-
-            // Garante que os itens do pedido têm os campos esperados pelo backend
-            const itensPedido = carrinho.map(item => ({
-                id: item.id,
-                nome: item.nome,
-                preco: item.preco,
-                quantidade: item.quantidade
-            }));
-
-            const pedido = {
-                nome: nomeValue,
-                cpf: cpfValue,
-                email: emailValue,
-                pagamento: pagamentoValue,
-                itens: itensPedido,
-                total: itensPedido.reduce((acc, item) => acc + item.preco * item.quantidade, 0),
-                cupom: cupomValue // Envia o cupom para o backend
-            };
-
-            fetchComUUID('https://hat-store-training.fly.dev/api/pedido', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(pedido)
-            })
-            .then(res => {
-                if (res.status === 401) {
-                    alert("Acesso não autorizado. Código de acesso inválido.");
-                    localStorage.removeItem("api_uuid");
-                    solicitarUUID();
-                    return;
-                }
-                if (res.status === 403) {
-                    // Compra negada por uso repetido do cupom HAD10
-                    exibirModalCompraNegada();
-                    return;
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data) {
-                    localStorage.removeItem('carrinho');
-                    exibirCodigoPagamento(pagamentoValue);
-                }
-            })
-            .catch(() => {
-                alert("Erro ao finalizar pedido.");
-            });
+    // 3. Envia o pedido para a API
+    showLoader();
+    try {
+        const data = await fetchApi('/pedido', {
+            method: 'POST',
+            body: JSON.stringify(pedido)
         });
-    }
 
-    // Função para modal de compra negada
-    function exibirModalCompraNegada() {
-        const modal = document.getElementById('modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        if (modal && modalTitle && modalBody) {
-            modalTitle.innerText = "Compra negada";
-            modalBody.innerHTML = `
-                <p style="color:#e11d48;font-weight:bold;">O cupom HAD10 só pode ser usado uma vez por CPF.</p>
-                <p>Se você já utilizou esse cupom, finalize sua compra sem o cupom ou entre em contato com o suporte.</p>
-                <button id="fechar-modal-negada" style="background:#232323;color:#c9a94b;border:none;border-radius:8px;padding:0.7rem 1.2rem;font-size:1rem;cursor:pointer;">Fechar</button>
-            `;
-            modal.style.display = 'flex';
-            document.getElementById('fechar-modal-negada').onclick = function() {
-                modal.style.display = 'none';
-            };
-        }
-    }
+        // 4. Se o pedido for bem-sucedido
+        localStorage.removeItem('carrinho'); // Limpa o carrinho
+        localStorage.removeItem('cupom'); // Limpa o cupom
+        
+        exibirCodigoPagamento(pedido.pagamento);
 
-    // Usa a modal já existente no HTML e não redireciona automaticamente
-    function exibirCodigoPagamento(metodo) {
-        let titulo = `Pagamento ${metodo === "pix" ? "PIX" : "Boleto"}`;
-        let codigo = "";
-        if (metodo === "pix") {
-            codigo = "00020126580014BR.GOV.BCB.PIX0136b1e1f2e3d4c5b6a7f8e9d0c1b2a3f4g5h6i7j8k9l5204000053039865405120.005802BR5920Had Store6009SAO PAULO61080540900062070503***6304ABCD";
-        } else if (metodo === "boleto") {
-            codigo = "34191.79001 01043.510047 91020.150008 7 92180011000";
+    } catch (error) {
+        // 5. Trata os erros
+        if (error.message.includes('Cupom HAD10 já utilizado')) {
+            exibirModalCompraNegada();
         } else {
-            codigo = "Código não disponível";
+            console.error('Erro ao finalizar pedido:', error);
+            alert(`Erro ao finalizar pedido: ${error.message}`);
         }
-
-        // Preenche e exibe a modal já existente
-        const modal = document.getElementById('modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        if (modal && modalTitle && modalBody) {
-            modalTitle.innerText = titulo;
-            modalBody.innerHTML = `
-                <p>Utilize o código abaixo para realizar o pagamento:</p>
-                <pre id="codigo-pagamento" class="confirmacao-codigo">${codigo}</pre>
-                <button id="copiar-codigo" style="background:#c9a94b;color:#fff;border:none;border-radius:8px;padding:0.7rem 1.2rem;font-size:1rem;cursor:pointer;margin-bottom:1rem;">Copiar código</button>
-                <br>
-                <button id="fechar-modal" style="background:#232323;color:#c9a94b;border:none;border-radius:8px;padding:0.7rem 1.2rem;font-size:1rem;cursor:pointer;">Fechar</button>
-            `;
-            modal.style.display = 'flex';
-
-            document.getElementById('copiar-codigo').onclick = function() {
-                const texto = document.getElementById('codigo-pagamento').innerText;
-                navigator.clipboard.writeText(texto).then(() => {
-                    this.innerText = "Copiado!";
-                    setTimeout(() => { this.innerText = "Copiar código"; }, 1500);
-                });
-            };
-
-            // CORREÇÃO: apenas fecha a modal, não redireciona
-            document.getElementById('fechar-modal').onclick = function() {
-                modal.style.display = 'none';
-            };
-        }
+    } finally {
+        hideLoader();
     }
+}
 
-    const pedidoResumo = document.getElementById('pedido-resumo');
-    const carrinho = window.localStorage.getItem('carrinho');
-    const cupomValue = (localStorage.getItem('cupom') || '').toUpperCase();
+function montarObjetoPedido() {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+    const cupom = localStorage.getItem('cupom') || "";
 
-    if (pedidoResumo && carrinho) {
-        const itens = JSON.parse(carrinho);
-        let html = "<strong>Resumo do pedido:</strong><ul>";
-        let total = 0;
-        itens.forEach(item => {
-            html += `<li>${item.nome} (${item.quantidade || 1}x) - <strong>R$ ${item.preco.toFixed(2)}</strong></li>`;
-            total += item.preco * (item.quantidade || 1);
+    const itensPedido = carrinho.map(item => ({
+        id: item.id,
+        nome: item.nome,
+        price: item.preco, // O backend espera 'price', não 'preco'
+        quantidade: item.quantidade
+    }));
+
+    return {
+        nome: document.getElementById('nome').value,
+        cpf: document.getElementById('cpf').value,
+        email: document.getElementById('email').value,
+        telefone: document.getElementById('telefone').value,
+        endereco: document.getElementById('endereco').value,
+        numero: document.getElementById('numero').value,
+        bairro: document.getElementById('bairro').value,
+        cep: document.getElementById('cep').value,
+        cidade: document.getElementById('cidade').value,
+        uf: document.getElementById('uf').value,
+        pagamento: document.getElementById('pagamento').value,
+        itens: itensPedido,
+        cupom: cupom,
+    };
+}
+
+
+//
+// FUNÇÕES DE VALIDAÇÃO E UI
+//
+
+function validarFormulario() {
+    let isValid = true;
+    document.querySelectorAll('.input-error').forEach(span => span.textContent = '');
+    document.querySelectorAll('.input-invalid').forEach(input => input.classList.remove('input-invalid'));
+
+    // Valida cada campo e atualiza 'isValid'
+    isValid = validaCampo('nome', /.{3,}/, 'Digite seu nome completo') && isValid;
+    isValid = validaCampo('cpf', /^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'CPF inválido. Formato: 000.000.000-00') && isValid;
+    isValid = validaCampo('email', /^[^@\s]+@[^@\s]+\.[^@\s]+$/, 'Digite um e-mail válido') && isValid;
+    isValid = validaCampo('telefone', /^\(\d{2}\) \d{5}-\d{4}$/, 'Telefone inválido. Formato: (99) 99999-9999') && isValid;
+    isValid = validaCampo('endereco', /.+/, 'Preencha a rua') && isValid;
+    isValid = validaCampo('numero', /^\d+$/, 'Digite apenas números') && isValid;
+    isValid = validaCampo('bairro', /.+/, 'Preencha o bairro') && isValid;
+    isValid = validaCampo('cep', /^\d{5}-\d{3}$/, 'CEP inválido. Formato: 00000-000') && isValid;
+    isValid = validaCampo('cidade', /.+/, 'Preencha a cidade') && isValid;
+    isValid = validaCampo('uf', /^[A-Za-z]{2}$/, 'Digite a sigla do estado (ex: SP)') && isValid;
+    isValid = validaCampo('pagamento', /.+/, 'Selecione a forma de pagamento') && isValid;
+
+    return isValid;
+}
+
+function validaCampo(id, regex, mensagemErro) {
+    const campo = document.getElementById(id);
+    const erroEl = document.getElementById(`erro-${id}`);
+
+    if (!campo.value.match(regex)) {
+        campo.classList.add('input-invalid');
+        if (erroEl) erroEl.textContent = mensagemErro;
+        return false;
+    }
+    return true;
+}
+
+function selectPagamento(tipo) {
+    document.getElementById('btn-pix').classList.remove('selected');
+    document.getElementById('btn-boleto').classList.remove('selected');
+    
+    if (tipo === 'pix') document.getElementById('btn-pix').classList.add('selected');
+    if (tipo === 'boleto') document.getElementById('btn-boleto').classList.add('selected');
+
+    document.getElementById('pagamento').value = tipo;
+    document.getElementById('erro-pagamento').textContent = '';
+}
+
+function exibirCodigoPagamento(metodo) {
+    const titulo = `Pagamento ${metodo === "pix" ? "PIX" : "Boleto"}`;
+    const codigo = metodo === "pix"
+        ? "00020126580014BR.GOV.BCB.PIX0136b1e1f2e3d4c5b6a7f8e9d0c1b2a3f4g5h6i7j8k9l5204000053039865405120.005802BR5920Had Store6009SAO PAULO61080540900062070503***6304ABCD"
+        : "34191.79001 01043.510047 91020.150008 7 92180011000";
+
+    const bodyHtml = `
+        <p>Utilize o código abaixo para realizar o pagamento:</p>
+        <pre id="codigo-pagamento" class="confirmacao-codigo">${codigo}</pre>
+        <button id="copiar-codigo" class="auth-button" style="margin-bottom: 1rem;">Copiar código</button>
+        <button id="fechar-modal-pagamento" class="auth-button" style="background: #444;">Fechar</button>
+    `;
+    openModal(titulo, bodyHtml);
+
+    document.getElementById('copiar-codigo').addEventListener('click', function() {
+        navigator.clipboard.writeText(codigo).then(() => {
+            this.innerText = "Copiado!";
+            setTimeout(() => { this.innerText = "Copiar código"; }, 2000);
         });
+    });
+    document.getElementById('fechar-modal-pagamento').addEventListener('click', () => {
+        closeModal();
+        window.location.href = 'index.html'; // Redireciona para home após fechar
+    });
+}
 
-        let desconto = 0;
-        if (cupomValue === "HAD10") {
-            desconto = total * 0.10;
-            html += `<div class="pedido-desconto" style="color:#22c55e;font-weight:bold;margin-top:0.5em;">
-                        Cupom HAD10 aplicado: -R$ ${desconto.toFixed(2)}
-                    </div>`;
-        }
+function exibirModalCompraNegada() {
+    const bodyHtml = `
+        <p style="color:#e11d48;font-weight:bold;">O cupom HAD10 só pode ser usado uma vez por CPF.</p>
+        <p>Por favor, remova o cupom no carrinho e tente finalizar sua compra novamente.</p>
+        <button id="fechar-modal-negada" class="auth-button">Entendi</button>
+    `;
+    openModal("Compra negada", bodyHtml);
+    document.getElementById('fechar-modal-negada').addEventListener('click', closeModal);
+}
 
-        html += `<div class="pedido-total"><strong>Total com desconto:</strong> R$ ${(total - desconto).toFixed(2)}</div>`;
-        pedidoResumo.innerHTML = html;
-    }
-
-    // Máscaras dos inputs
+function aplicarMascaras() {
     if (window.jQuery && window.jQuery.fn.mask) {
         $('#cpf').mask('000.000.000-00');
         $('#telefone').mask('(00) 00000-0000');
         $('#cep').mask('00000-000');
-        $('#numero').mask('00000');
+        $('#numero').mask('000000');
     }
-
-    // Seleção da forma de pagamento
-    const btnPix = document.getElementById('btn-pix');
-    const btnBoleto = document.getElementById('btn-boleto');
-    const pagamentoInput = document.getElementById('pagamento');
-    const buttons = [btnPix, btnBoleto];
-
-    function selectPagamento(tipo) {
-        buttons.forEach(btn => btn.classList.remove('selected'));
-        if (tipo === 'pix') btnPix.classList.add('selected');
-        if (tipo === 'boleto') btnBoleto.classList.add('selected');
-        pagamentoInput.value = tipo;
-        document.getElementById('erro-pagamento').textContent = '';
-    }
-
-    if (btnPix) btnPix.onclick = () => selectPagamento('pix');
-    if (btnBoleto) btnBoleto.onclick = () => selectPagamento('boleto');
-});
+}
