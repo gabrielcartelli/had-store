@@ -225,6 +225,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/hats": {
+            "get": {
+                "description": "Retorna a lista de chapéus disponíveis",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hats"
+                ],
+                "summary": "Lista todos os chapéus",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Hat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/pedido": {
             "post": {
                 "description": "Registra os dados do pedido em memória",
@@ -356,7 +379,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Had Store API",
 	Description:      "API da loja de chapéus Had Store.",

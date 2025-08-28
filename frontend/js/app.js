@@ -1,27 +1,22 @@
+    // Botão de carrinho no header abre a sidebar do carrinho
+    const headerCartBtn = document.getElementById('header-cart-btn');
 // Variáveis globais para os dados da aplicação
 let todosChapeus = [];
 let carrinho = [];
 
 // Função principal que roda quando o HTML está pronto
 document.addEventListener('DOMContentLoaded', () => {
-    //
-    // LÓGICA DE VERIFICAÇÃO DE ACESSO E AUTENTICAÇÃO
-    //
-    const API_UUID = "e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d";
-
-    // Solicita o UUID ao usuário APENAS se ele não existir
-    function solicitarUUID() {
-        let uuid = localStorage.getItem("api_uuid");
-        if (uuid !== API_UUID) {
-            uuid = prompt("Informe o código de acesso:");
-            if (uuid === null || uuid !== API_UUID) {
-                document.body.innerHTML = "<h2 style='color:#e11d48;text-align:center;margin-top:3rem;'>Acesso bloqueado. Recarregue a página para tentar novamente.</h2>";
-                throw new Error("Acesso bloqueado.");
-            }
-            localStorage.setItem("api_uuid", uuid);
-        }
+    // Botão de carrinho no header abre a sidebar do carrinho
+    const headerCartBtn = document.getElementById('header-cart-btn');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    if (headerCartBtn && cartSidebar) {
+        headerCartBtn.addEventListener('click', () => {
+            cartSidebar.classList.add('open');
+            atualizarCarrinho();
+        });
     }
-    solicitarUUID(); // Garante que o UUID da API está presente
+    // Aplica máscara de CPF ao input da modal de consulta de pedidos
+    $('#cpf-consulta-sidebar').mask('000.000.000-00');
 
     // Atualiza a UI para refletir o estado de login
     function setupAuthUI() {
@@ -50,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //
     carregarChapeus();
     document.getElementById('search-hat').addEventListener('input', filtrarChapeus);
-    
+
     const carrinhoSalvo = localStorage.getItem('carrinho');
     if (carrinhoSalvo) {
         carrinho = JSON.parse(carrinhoSalvo);
@@ -62,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // EVENT LISTENERS PARA SIDEBARS E AÇÕES
     //
     const cartMenuButton = document.getElementById('cart-menu-button');
-    const cartSidebar = document.getElementById('cart-sidebar');
     const closeCartButton = document.getElementById('close-cart');
 
     if (cartMenuButton) {
@@ -87,11 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pedidosMenuButton) {
         pedidosMenuButton.addEventListener('click', () => {
-            if (!localStorage.getItem('jwt_token')) {
-                alert("Você precisa estar logado para ver seus pedidos.");
-                window.location.href = 'auth.html';
-                return;
-            }
             pedidosSidebar.classList.add('open');
             document.getElementById('pedidos-list').innerHTML = ''; // Limpa a lista
         });
@@ -110,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (consultaForm) {
         consultaForm.addEventListener('submit', handleConsultaPedidos);
     }
-    
+
     // Cupom no carrinho
     const aplicarCupomBtn = document.getElementById('aplicar-cupom');
     if (aplicarCupomBtn) {
@@ -171,7 +160,7 @@ async function handleConsultaPedidos(event) {
                 <div class="pedido-itens">
                     <strong>Itens:</strong>
                     <ul>
-                        ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.price.toFixed(2)}</li>`).join('')}
+                        ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
                     </ul>
                 </div>
             `;
@@ -311,10 +300,10 @@ function atualizarCarrinho() {
     });
 
     // Adiciona event listeners aos botões do carrinho
-    cartDiv.querySelectorAll('.qty-btn').forEach(btn => 
+    cartDiv.querySelectorAll('.qty-btn').forEach(btn =>
         btn.addEventListener('click', e => alterarQuantidade(parseInt(e.target.dataset.id), parseInt(e.target.dataset.delta)))
     );
-    cartDiv.querySelectorAll('.remove-btn').forEach(btn => 
+    cartDiv.querySelectorAll('.remove-btn').forEach(btn =>
         btn.addEventListener('click', e => removerDoCarrinho(parseInt(e.target.dataset.id)))
     );
 
@@ -339,11 +328,6 @@ function atualizarCarrinho() {
 function handleCheckout() {
     if (carrinho.length === 0) {
         alert('Seu carrinho está vazio!');
-        return;
-    }
-    if (!localStorage.getItem('jwt_token')) {
-        alert("Por favor, faça o login antes de finalizar a compra.");
-        window.location.href = 'auth.html';
         return;
     }
     window.location.href = "checkout.html";

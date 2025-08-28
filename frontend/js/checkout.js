@@ -1,22 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Redireciona para login se não estiver autenticado
+    if (!localStorage.getItem('jwt_token')) {
+        window.location.href = 'auth.html';
+        return;
+    }
     //
     // PROTEÇÃO DA PÁGINA E CONFIGURAÇÃO INICIAL
     //
     const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
-    
-    // Se não estiver logado, redireciona para o login
-    if (!localStorage.getItem('jwt_token')) {
-        alert('Você precisa estar logado para finalizar a compra.');
-        window.location.href = 'auth.html';
-        return; // Impede a execução do resto do script
-    }
-    
-    // Se o carrinho estiver vazio, redireciona para a página inicial
-    if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio.');
-        window.location.href = 'index.html';
-        return; // Impede a execução do resto do script
-    }
     
     // Monta o resumo do pedido na tela
     montarResumoPedido(carrinho);

@@ -1,4 +1,4 @@
-basePath: /api
+basePath: /
 definitions:
   handlers.HatPedido:
     properties:
@@ -200,6 +200,21 @@ paths:
       summary: Finaliza o pedido
       tags:
       - checkout
+  /hats:
+    get:
+      description: Retorna a lista de chapéus disponíveis
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Hat'
+            type: array
+      summary: Lista todos os chapéus
+      tags:
+      - hats
   /pedido:
     post:
       consumes:

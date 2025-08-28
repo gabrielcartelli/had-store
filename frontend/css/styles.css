@@ -1,3 +1,23 @@
+/* Botão de carrinho destacado no header */
+.header-cart-btn {
+    background: linear-gradient(90deg, #c9a94b 60%, #f7e7b4 100%);
+    color: #232323;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5em 1.2em;
+    font-size: 1.05rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(201,169,75,0.12);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.header-cart-btn:hover {
+    transform: scale(1.07);
+    box-shadow: 0 4px 16px rgba(201,169,75,0.18);
+}
 /* Tema: cinza, prata, preto e dourado */
 
 /* Paleta */
@@ -28,7 +48,10 @@ body {
     margin: 0;
 }
 
-/* HEADER */
+.header-nav #auth-links {
+    display: flex;
+    align-items: center;
+}
 .main-header {
     width: 100%;
     background: var(--cor-header);

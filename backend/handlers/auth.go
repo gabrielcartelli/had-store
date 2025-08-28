@@ -19,7 +19,7 @@ var userIDCounter = 1
 
 // A chave secreta para criar e verificar nossos "carimbos" (tokens).
 // Em um projeto real, isso viria de uma variável de ambiente!
-var jwtKey = []byte("minha_chave_super_secreta")
+var jwtKey = []byte("e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d")
 
 // Estrutura para rastrear tentativas de login falhas
 type loginAttempt struct {
@@ -88,7 +88,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param credentials body models.LoginRequest true "Credenciais de Login" 
+// @Param credentials body models.LoginRequest true "Credenciais de Login"
 // @Success 200 {object} map[string]string "Token JWT"
 // @Failure 400 {string} string "Requisição inválida"
 // @Failure 401 {string} string "Email ou senha inválidos"

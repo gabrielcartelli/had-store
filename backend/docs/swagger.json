@@ -7,7 +7,7 @@
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/api",
+    "basePath": "/",
     "paths": {
         "/auth/login": {
             "post": {
@@ -214,6 +214,29 @@
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/hats": {
+            "get": {
+                "description": "Retorna a lista de chapéus disponíveis",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hats"
+                ],
+                "summary": "Lista todos os chapéus",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Hat"
+                            }
                         }
                     }
                 }

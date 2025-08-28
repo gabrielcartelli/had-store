@@ -1,18 +1,10 @@
 // A função que vamos usar em todos os lugares para fazer chamadas à API
 async function fetchApi(path, options = {}) {
-    // Pega o UUID de acesso (lógica que já existia)
-    const apiUUID = localStorage.getItem("api_uuid");
-    if (!apiUUID) {
-        // Você pode redirecionar para uma página de erro ou pedir o UUID novamente
-        throw new Error("Código de acesso (UUID) não encontrado.");
-    }
-    
     // Pega o token de login
     const token = localStorage.getItem('jwt_token');
 
     const defaultHeaders = {
         'Content-Type': 'application/json',
-        'X-API-UUID': apiUUID,
     };
 
     // Se o token existir, adiciona ao cabeçalho de Autorização

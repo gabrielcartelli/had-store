@@ -12,21 +12,7 @@ import (
 
 // Chave secreta para os tokens. Precisa ser a mesma usada no handlers/auth.go
 // O ideal seria compartilhar isso de um pacote de configuração, mas por simplicidade vamos redeclará-la.
-var jwtKey = []byte("minha_chave_super_secreta")
-
-const apiUUID = "e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d"
-
-// Middleware para validar o UUID no header
-func uuidMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		uuid := r.Header.Get("X-API-UUID")
-		if uuid != apiUUID {
-			http.Error(w, "Acesso não autorizado", http.StatusUnauthorized)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
+var jwtKey = []byte("e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d")
 
 // Middleware para logar cada request
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -41,6 +27,7 @@ func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
+			log.Printf("[ERRO] Autenticação falhou: Cabeçalho de autorização ausente em %s %s", r.Method, r.URL.Path)
 			http.Error(w, "Cabeçalho de autorização ausente", http.StatusUnauthorized)
 			return
 		}
@@ -53,10 +40,12 @@ func authMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !token.Valid {
+			log.Printf("[ERRO] Token inválido: %v | Rota: %s %s", err, r.Method, r.URL.Path)
 			http.Error(w, "Token inválido", http.StatusUnauthorized)
 			return
 		}
-		
+
+		log.Printf("[INFO] Autenticação bem-sucedida para rota %s %s", r.Method, r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }
@@ -74,16 +63,24 @@ func InitializeRoutes() *mux.Router {
 	authRouter.HandleFunc("/register", handlers.RegisterHandler).Methods("POST")
 	authRouter.HandleFunc("/login", handlers.LoginHandler).Methods("POST")
 
-	// 3. Sub-roteador para rotas da API (PROTEGIDAS)
-	// Caminho: /api/...
-	// Middlewares: uuidMiddleware e authMiddleware (aplicados em sequência)
-	apiRouter := router.PathPrefix("/api").Subrouter()
-	apiRouter.Use(uuidMiddleware)
-	apiRouter.Use(authMiddleware) 
-	
-	apiRouter.HandleFunc("/hats", handlers.GetHats).Methods("GET")
-	apiRouter.HandleFunc("/pedido", handlers.CriarPedido).Methods("POST") // Rota correta para criar pedido
-	apiRouter.HandleFunc("/pedidos", handlers.ConsultarPedidos).Methods("GET")
+	// 3. Sub-roteador para rotas da API públicas
+	apiPublic := router.PathPrefix("/api").Subrouter()
+	apiPublic.HandleFunc("/hats", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[INFO] Requisição recebida em /api/hats: %s %s", r.Method, r.URL.Path)
+		handlers.GetHats(w, r)
+	}).Methods("GET")
+
+	// 4. Sub-roteador para rotas da API protegidas
+	apiProtected := router.PathPrefix("/api").Subrouter()
+	apiProtected.Use(authMiddleware)
+	apiProtected.HandleFunc("/pedido", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[INFO] Requisição recebida em /api/pedido: %s %s", r.Method, r.URL.Path)
+		handlers.RegistrarPedido(w, r)
+	}).Methods("POST")
+	apiProtected.HandleFunc("/pedidos", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[INFO] Requisição recebida em /api/pedidos: %s %s", r.Method, r.URL.Path)
+		handlers.ConsultarPedidos(w, r)
+	}).Methods("GET")
 
 	return router
 }

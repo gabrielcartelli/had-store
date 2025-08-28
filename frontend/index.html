@@ -5,6 +5,8 @@
     <title>Had Store</title>
     <link rel="stylesheet" href="css/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
     <header class="main-header">
@@ -19,10 +21,13 @@
             <nav class="header-nav">
                  <a href="index.html" class="header-link">Home</a>
                  <a href="pedidos.html" class="header-link">Meus Pedidos</a>
-                 <!-- CORREÇÃO: Div para login/logout já estava correta -->
                  <div id="auth-links">
                      <a href="auth.html" class="header-link">Login</a>
                  </div>
+                 <button id="header-cart-btn" class="header-cart-btn" title="Abrir carrinho">
+                     <img src="imagens/carrinho-icon.png" alt="Carrinho" style="height:22px;vertical-align:middle;margin-right:6px;">
+                     <span style="font-weight:bold;">Carrinho</span>
+                 </button>
             </nav>
         </div>
         <div class="header-bar">
@@ -43,10 +48,6 @@
             </div>
             <div id="hats"></div>
         </section>
-        <aside class="sidebar-actions">
-            <button id="cart-menu-button" class="cart-menu-btn" title="Abrir carrinho">Carrinho</button>
-            <button id="pedidos-menu-button" class="consultar-pedidos-btn" title="Consultar pedidos">Meus pedidos</button>
-        </aside>
     </main>
     <!-- Loader animado -->
     <div id="loader" class="loader" style="display:none;">
@@ -87,7 +88,7 @@
         </div>
         <!-- CORREÇÃO: Atualizando IDs para evitar conflitos -->
         <form id="consulta-form-sidebar" class="consulta-form">
-            <label for="cpf-consulta-sidebar">Informe seu CPF:</label>
+            <label for="cpf-consulta-sidebar">CPF:</label>
             <input type="text" id="cpf-consulta-sidebar" required placeholder="Seu CPF" style="width:100%;margin-bottom:1rem;">
             <button type="submit" style="width:100%;">Consultar</button>
         </form>

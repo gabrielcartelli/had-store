@@ -1,6 +1,11 @@
 // frontend/js/pedidos.js
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Redireciona para login se não estiver autenticado
+    if (!localStorage.getItem('jwt_token')) {
+        window.location.href = 'auth.html';
+        return;
+    }
     const consultaForm = document.getElementById('consulta-form-pedidos');
     if (!consultaForm) return;
 
@@ -45,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="pedido-itens">
                         <strong>Itens do Pedido:</strong>
                         <ul>
-                            ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.price.toFixed(2)}</li>`).join('')}
+                            ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
                         </ul>
                     </div>
                 `;

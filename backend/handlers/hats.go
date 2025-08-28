@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"sync"
 )
@@ -52,6 +53,13 @@ var (
 )
 
 // Handler para listar chapéus (mantido)
+// GetHats godoc
+// @Summary Lista todos os chapéus
+// @Description Retorna a lista de chapéus disponíveis
+// @Tags hats
+// @Produce json
+// @Success 200 {array} models.Hat
+// @Router /hats [get]
 func GetHats(w http.ResponseWriter, r *http.Request) {
 	// Permitir requisições do frontend (CORS)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -122,6 +130,13 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Calcular o total do pedido
+	total := 0.0
+	for _, item := range pedido.Itens {
+		total += item.Preco * float64(item.Quantidade)
+	}
+	pedido.Total = total
+
 	pedidosLock.Lock()
 	pedidos = append(pedidos, pedido)
 	pedidosLock.Unlock()
@@ -136,6 +151,7 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
 	cpf := r.URL.Query().Get("cpf")
 	if cpf == "" {
+		log.Printf("[WARN] Consulta de pedidos sem CPF informado")
 		http.Error(w, "CPF não informado", http.StatusBadRequest)
 		return
 	}
@@ -150,6 +166,16 @@ func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	log.Printf("[INFO] Consulta de pedidos para CPF %s: %d encontrados", cpf, len(pedidosFiltrados))
+	// Log de todos os pedidos em memória
+	if len(pedidos) == 0 {
+		log.Printf("[INFO] Nenhum pedido registrado em memória.")
+	} else {
+		log.Printf("[INFO] Pedidos em memória:")
+		for i, pedido := range pedidos {
+			log.Printf("  [%d] Nome: %s | CPF: %s | Total: %.2f | Pagamento: %s | Itens: %d", i+1, pedido.Nome, pedido.CPF, pedido.Total, pedido.Pagamento, len(pedido.Itens))
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(pedidosFiltrados)
 }
