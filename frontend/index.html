@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Had Store</title>
     <link rel="stylesheet" href="css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <header class="main-header">
@@ -16,8 +17,12 @@
                 </div>
             </a>
             <nav class="header-nav">
-                <a href="index.html" class="header-link">Home</a>
-                <a href="pedidos.html" class="header-link">Meus Pedidos</a>
+                 <a href="index.html" class="header-link">Home</a>
+                 <a href="pedidos.html" class="header-link">Meus Pedidos</a>
+                 <!-- CORREÇÃO: Div para login/logout já estava correta -->
+                 <div id="auth-links">
+                     <a href="auth.html" class="header-link">Login</a>
+                 </div>
             </nav>
         </div>
         <div class="header-bar">
@@ -64,7 +69,6 @@
         </div>
         <div id="cart-items"></div>
         <div id="total-amount"></div>
-        <!-- Layout do cupom no carrinho, com mensagem de sucesso embaixo do input -->
         <div class="carrinho-cupom" style="background:#232323;border-radius:10px;padding:1.2em;margin-bottom:1em;display:flex;flex-direction:column;align-items:flex-start;gap:0.7em;">
             <label for="cupom" style="color:#c9a94b;font-weight:bold;margin-bottom:0.2em;">Cupom de desconto:</label>
             <div style="display:flex;align-items:center;gap:1em;">
@@ -81,13 +85,17 @@
             <h2>Meus Pedidos</h2>
             <button id="close-pedidos" class="close-pedidos">&times;</button>
         </div>
-        <form id="consulta-form" class="consulta-form">
-            <label for="cpf-consulta">Informe seu CPF:</label>
-            <input type="text" id="cpf-consulta" required placeholder="Seu CPF" style="width:100%;margin-bottom:1rem;">
+        <!-- CORREÇÃO: Atualizando IDs para evitar conflitos -->
+        <form id="consulta-form-sidebar" class="consulta-form">
+            <label for="cpf-consulta-sidebar">Informe seu CPF:</label>
+            <input type="text" id="cpf-consulta-sidebar" required placeholder="Seu CPF" style="width:100%;margin-bottom:1rem;">
             <button type="submit" style="width:100%;">Consultar</button>
         </form>
-        <div id="pedidos-list" class="pedidos-list"></div>
+        <div id="pedidos-list-sidebar" class="pedidos-list"></div>
     </div>
+    
+    <!-- CORREÇÃO: Ordem dos scripts é importante -->
+    <script src="js/api.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

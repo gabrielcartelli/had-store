@@ -1,182 +1,227 @@
-openapi: 3.0.0
+basePath: /api
+definitions:
+  handlers.HatPedido:
+    properties:
+      id:
+        type: integer
+      nome:
+        type: string
+      preco:
+        type: number
+      quantidade:
+        type: integer
+    type: object
+  handlers.Pedido:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      itens:
+        items:
+          $ref: '#/definitions/handlers.HatPedido'
+        type: array
+      nome:
+        type: string
+      pagamento:
+        type: string
+      total:
+        type: number
+    type: object
+  models.Hat:
+    properties:
+      id:
+        type: integer
+      nome:
+        type: string
+      price:
+        type: number
+      quantidade:
+        type: integer
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      rememberMe:
+        type: boolean
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8080
 info:
-  title: Had Store API
+  contact: {}
   description: API da loja de chapéus Had Store.
+  title: Had Store API
   version: "1.0"
-servers:
-  - url: http://localhost:8080
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Loga um usuário com email e senha e retorna um token JWT
+      parameters:
+      - description: Credenciais de Login
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token JWT
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Requisição inválida
+          schema:
+            type: string
+        "401":
+          description: Email ou senha inválidos
+          schema:
+            type: string
+        "429":
+          description: Muitas tentativas de login
+          schema:
+            type: string
+      summary: Autentica um usuário
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova conta de usuário com email e senha
+      parameters:
+      - description: Credenciais de Registro
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Usuário criado com sucesso!
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Requisição inválida
+          schema:
+            type: string
+        "409":
+          description: Usuário já existe
+          schema:
+            type: string
+      summary: Registra um novo usuário
+      tags:
+      - auth
   /cart/add:
     post:
-      summary: Adiciona um chapéu ao carrinho
+      consumes:
+      - application/json
       description: Adiciona um chapéu ao carrinho do usuário
-      operationId: addHatToCart
-      tags:
-        - cart
-      requestBody:
+      parameters:
+      - description: Item do carrinho
+        in: body
+        name: item
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Hat'
+        schema:
+          $ref: '#/definitions/models.Hat'
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Adiciona um chapéu ao carrinho
+      tags:
+      - cart
   /cart/update:
     put:
-      summary: Atualiza o carrinho
+      consumes:
+      - application/json
       description: Atualiza a quantidade de um item no carrinho
-      operationId: updateCart
-      tags:
-        - cart
-      requestBody:
+      parameters:
+      - description: Item do carrinho
+        in: body
+        name: item
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Hat'
+        schema:
+          $ref: '#/definitions/models.Hat'
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Atualiza o carrinho
+      tags:
+      - cart
   /checkout:
     post:
-      summary: Finaliza o pedido
+      consumes:
+      - application/json
       description: Finaliza o pedido do usuário
-      operationId: checkout
-      tags:
-        - checkout
-      requestBody:
+      parameters:
+      - description: Dados do pedido
+        in: body
+        name: pedido
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
-  /hats:
-    get:
-      summary: Lista todos os chapéus
-      description: Retorna todos os chapéus disponíveis
-      operationId: listHats
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Finaliza o pedido
       tags:
-        - hats
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Hat'
+      - checkout
   /pedido:
     post:
-      summary: Registra um pedido
+      consumes:
+      - application/json
       description: Registra os dados do pedido em memória
-      operationId: registerOrder
-      tags:
-        - pedido
-      requestBody:
+      parameters:
+      - description: Dados do pedido
+        in: body
+        name: pedido
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
+        schema:
+          $ref: '#/definitions/handlers.Pedido'
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-components:
-  schemas:
-    Pedido:
-      type: object
-      required:
-        - nome
-        - cpf
-        - email
-        - telefone
-        - endereco
-        - numero
-        - bairro
-        - cep
-        - cidade
-        - uf
-        - pagamento
-        - itens
-        - total
-      properties:
-        nome:
-          type: string
-          example: "João da Silva"
-        cpf:
-          type: string
-          example: "123.456.789-00"
-        email:
-          type: string
-          example: "joao@email.com"
-        telefone:
-          type: string
-          example: "(11) 91234-5678"
-        endereco:
-          type: string
-          example: "Rua das Flores"
-        numero:
-          type: string
-          example: "123"
-        bairro:
-          type: string
-          example: "Centro"
-        cep:
-          type: string
-          example: "12345-678"
-        cidade:
-          type: string
-          example: "São Paulo"
-        uf:
-          type: string
-          example: "SP"
-        pagamento:
-          type: string
-          enum: [pix, boleto]
-          example: "pix"
-        itens:
-          type: array
-          items:
-            $ref: '#/components/schemas/Hat'
-        total:
-          type: number
-          format: float
-          example: 199.90
-    Hat:
-      type: object
-      properties:
-        id:
-          type: integer
-        nome:
-          type: string
-        preco:
-          type: number
-          format: float
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Registra um pedido
+      tags:
+      - pedido
+swagger: "2.0"
