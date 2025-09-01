@@ -311,10 +311,10 @@ function atualizarCarrinho() {
     let descontoHtml = '';
     let totalComDesconto = total;
 
-    if (cupom === 'HAD10') {
+    if (cupom === 'HAT10') {
         const desconto = total * 0.10;
         totalComDesconto -= desconto;
-        descontoHtml = `<div class="cart-cupom-info">Cupom HAD10 aplicado: -R$ ${desconto.toFixed(2)}</div>`;
+    descontoHtml = `<div class="cart-cupom-info">Cupom HAT10 aplicado: -R$ ${desconto.toFixed(2)}</div>`;
     }
 
     totalDiv.innerHTML = `

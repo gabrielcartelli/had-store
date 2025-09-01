@@ -9,9 +9,9 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// @title Had Store API
+// @title Hat Store API
 // @version 1.0
-// @description API da loja de chapéus Had Store.
+// @description API da loja de chapéus Hat Store.
 // @host localhost:8080
 // @BasePath /
 

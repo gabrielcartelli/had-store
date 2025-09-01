@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API da loja de chapéus Had Store.",
-        "title": "Had Store API",
+    "description": "API da loja de chapéus Hat Store.",
+    "title": "Hat Store API",
         "contact": {},
         "version": "1.0"
     },

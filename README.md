@@ -1,4 +1,4 @@
-# Had Store
+# Hat Store
 
 Este é um projeto de loja de chapéus desenvolvido em Go (backend) e JavaScript/HTML/CSS (frontend).
 
@@ -68,7 +68,7 @@ A API possui documentação automática via Swagger.
   ```
 - Acesse em produção:
   ```
-  https://had-store.fly.dev/swagger/
+   https://hat-store.fly.dev/swagger/
   ```
 - Os endpoints principais estão descritos e podem ser testados diretamente pela interface.
 
@@ -81,4 +81,4 @@ A API possui documentação automática via Swagger.
 
 ---
 
-Had
+Hat

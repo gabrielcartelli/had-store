@@ -58,8 +58,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: API da loja de chapéus Had Store.
-  title: Had Store API
+  description: API da loja de chapéus Hat Store.
+  title: Hat Store API
   version: "1.0"
 paths:
   /auth/login:

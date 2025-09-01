@@ -12,9 +12,9 @@ import (
 var pedidosFeitos = make(map[string]bool)
 var pedidosMutex sync.Mutex
 
-// Armazena CPFs que já usaram o cupom HAD10
-var had10UsadoPorCPF = make(map[string]bool)
-var had10Mutex sync.Mutex
+// Armazena CPFs que já usaram o cupom HAT10
+var hat10UsadoPorCPF = make(map[string]bool)
+var hat10Mutex sync.Mutex
 
 func PedidoJaExiste(cpf string) bool {
 	pedidosMutex.Lock()
@@ -22,10 +22,10 @@ func PedidoJaExiste(cpf string) bool {
 	return pedidosFeitos[cpf]
 }
 
-func CPFUsouHad10(cpf string) bool {
-	had10Mutex.Lock()
-	defer had10Mutex.Unlock()
-	return had10UsadoPorCPF[cpf]
+func CPFUsouHat10(cpf string) bool {
+	hat10Mutex.Lock()
+	defer hat10Mutex.Unlock()
+	return hat10UsadoPorCPF[cpf]
 }
 
 func CriarPedido(w http.ResponseWriter, r *http.Request) {
@@ -39,9 +39,9 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Só retorna erro se o cupom for HAD10 e o CPF já usou HAD10 antes
-	if pedido.Cupom == "HAD10" && CPFUsouHad10(pedido.CPF) {
-		http.Error(w, "Cupom HAD10 já utilizado por este CPF.", http.StatusForbidden)
+	// Só retorna erro se o cupom for HAT10 e o CPF já usou HAT10 antes
+	if pedido.Cupom == "HAT10" && CPFUsouHat10(pedido.CPF) {
+		http.Error(w, "Cupom HAT10 já utilizado por este CPF.", http.StatusForbidden)
 		return
 	}
 
@@ -51,8 +51,8 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		total += item.Price * float64(item.Quantidade)
 	}
 
-	// Aplica desconto HAD10 só se for a primeira vez desse CPF
-	if pedido.Cupom == "HAD10" {
+	// Aplica desconto HAT10 só se for a primeira vez desse CPF
+	if pedido.Cupom == "HAT10" {
 		total = total * 0.9
 	}
 
@@ -93,11 +93,11 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Marca o CPF como tendo usado HAD10, apenas se o cupom foi usado
-	if pedido.Cupom == "HAD10" {
-		had10Mutex.Lock()
-		had10UsadoPorCPF[pedido.CPF] = true
-		had10Mutex.Unlock()
+	// Marca o CPF como tendo usado HAT10, apenas se o cupom foi usado
+	if pedido.Cupom == "HAT10" {
+		hat10Mutex.Lock()
+		hat10UsadoPorCPF[pedido.CPF] = true
+		hat10Mutex.Unlock()
 	}
 
 	w.WriteHeader(http.StatusCreated)

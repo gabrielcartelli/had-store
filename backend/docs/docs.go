@@ -381,7 +381,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Had Store API",
+	Title:            "Hat Store API",
 	Description:      "API da loja de chapéus Had Store.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
