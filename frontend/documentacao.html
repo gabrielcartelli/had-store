@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentação de Negócio - Hat Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <img src="imagens/logo-hatstore.png" alt="Hat Store" class="logo-header" />
+            <div class="header-titles">
+                <h1 class="titulo-header">Hat Store</h1>
+                <span class="slogan-header">Seu estilo começa pela cabeça</span>
+            </div>
+        </div>
+    </header>
+    <main class="container-principal" style="max-width:800px;margin:2rem auto;background:#fff;padding:2rem;border-radius:12px;">
+        <h2 style="color:#c9a94b;text-align:center;">Documentação de Negócio</h2>
+        <section>
+            <h3>Visão Geral</h3>
+            <p>
+                A Hat Store é uma loja virtual especializada em chapéus, permitindo que clientes naveguem por produtos, adicionem itens ao carrinho, realizem compras e consultem seus pedidos. O sistema é composto por um frontend em HTML/CSS/JS e um backend em Go, com autenticação via JWT e integração de métodos de pagamento fictícios (PIX e boleto).
+            </p>
+        </section>
+        <section>
+            <h3>Fluxo de Funcionamento</h3>
+            <ol>
+                <li><strong>Cadastro e Login:</strong> O usuário pode criar uma conta informando email e senha. Após o login, recebe um token JWT para autenticação nas operações protegidas.</li>
+                <li><strong>Listagem de Produtos:</strong> Todos os chapéus disponíveis são exibidos na página inicial. O usuário pode pesquisar e visualizar detalhes dos produtos.</li>
+                <li><strong>Carrinho de Compras:</strong> O cliente adiciona chapéus ao carrinho, ajusta quantidades e aplica cupons de desconto (ex: HAT10 para 10% off no primeiro pedido).</li>
+                <li><strong>Checkout:</strong> Para finalizar a compra, o usuário preenche dados pessoais, endereço e escolhe o método de pagamento (PIX ou boleto). O cupom HAT10 só pode ser usado uma vez por CPF.</li>
+                <li><strong>Registro do Pedido:</strong> O pedido é enviado ao backend, que valida os dados, calcula o total (aplicando descontos se aplicável) e armazena em memória.</li>
+                <li><strong>Consulta de Pedidos:</strong> O cliente pode consultar o histórico de pedidos informando o CPF, visualizando detalhes dos pedidos realizados.</li>
+            </ol>
+        </section>
+        <section>
+            <h3>Regras de Negócio</h3>
+            <ul>
+                <li>O cupom <strong>HAT10</strong> concede 10% de desconto apenas no primeiro pedido de cada CPF.</li>
+                <li>Pedidos só podem ser registrados por usuários autenticados (token JWT válido).</li>
+                <li>Dados obrigatórios: nome, CPF, email, telefone, endereço, cidade, UF, método de pagamento.</li>
+                <li>Validações de formato para CPF, email, telefone e CEP são realizadas no frontend e backend.</li>
+                <li>Pedidos e usuários são armazenados em memória (não persistente).</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Principais Funcionalidades</h3>
+            <ul>
+                <li>
+                    <strong>Autenticação de usuários:</strong> Permite que novos clientes se cadastrem e façam login, garantindo acesso seguro às operações protegidas do sistema.
+                </li>
+                <li>
+                    <strong>Listagem e pesquisa de chapéus:</strong> Exibe todos os produtos disponíveis, com opção de busca e visualização de detalhes de cada chapéu.
+                </li>
+                <li>
+                    <strong>Gerenciamento de carrinho e aplicação de cupom:</strong> O usuário pode adicionar chapéus ao carrinho, ajustar quantidades e aplicar cupons de desconto válidos.
+                </li>
+                <li>
+                    <strong>Checkout com validação de dados e seleção de pagamento:</strong> Na finalização da compra, o sistema valida os dados do cliente e permite escolher entre PIX ou boleto como forma de pagamento.
+                </li>
+                <li>
+                    <strong>Consulta de pedidos por CPF:</strong> Usuários autenticados podem consultar o histórico de compras informando seu CPF, visualizando detalhes dos pedidos realizados.
+                </li>
+                <li>
+                    <strong>Documentação da API via Swagger:</strong> Disponível em <code>/swagger/</code>, facilita o entendimento e testes das rotas do backend.
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h3>Fluxo de API</h3>
+            <ul>
+                <li><strong>/auth/register</strong>: Criação de conta de usuário.</li>
+                <li><strong>/auth/login</strong>: Autenticação e obtenção de token JWT.</li>
+                <li><strong>/api/hats</strong>: Listagem de chapéus (público).</li>
+                <li><strong>/api/pedido</strong>: Registro de pedido (protegido).</li>
+                <li><strong>/api/pedidos?cpf=...</strong>: Consulta de pedidos por CPF (protegido).</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Observações Técnicas</h3>
+            <ul>
+                <li>Frontend utiliza <code>localStorage</code> para armazenar carrinho e token JWT.</li>
+                <li>Backend em Go, rotas protegidas por middleware JWT.</li>
+                <li>Pedidos e usuários não são persistidos em banco de dados.</li>
+                <li>API documentada via Swagger (<code>/swagger/</code>).</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
