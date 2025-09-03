@@ -1,84 +1,75 @@
-# Hat Store
+# Hat Store - Projeto Completo
 
-Este é um projeto de loja de chapéus desenvolvido em Go (backend) e JavaScript/HTML/CSS (frontend).
+Este repositório contém o projeto **Hat Store**, uma loja fictícia de chapéus composta por frontend (HTML/CSS/JS) e backend (Go). O objetivo é servir como base para treinamento, avaliação e evolução de funcionalidades.
+
+## Especificações Técnicas
+
+- **Frontend:**  
+  - Desenvolvido em HTML, CSS e JavaScript puro.
+  - Estrutura modular com páginas para listagem, checkout, autenticação, pedidos, documentação e trabalho avaliativo.
+  - Integração com backend via chamadas REST.
+
+- **Backend:**  
+  - Implementado em Go.
+  - API RESTful para autenticação, listagem de produtos, registro de pedidos, consulta de pedidos e controle de estoque.
+  - Autenticação via JWT.
+  - Documentação da API disponível via Swagger.
 
 ## Como rodar localmente
 
-1. **Clone o repositório**
+1. **Clone o repositório:**
    ```sh
-   git clone <url-do-repositorio>
+   git clone https://github.com/seu-usuario/hat-store.git
    ```
 
-2. **Backend**
-   - Entre na pasta `backend`
-   - Instale as dependências:
-     ```sh
-     go mod tidy
-     ```
-   - Rode o servidor:
+2. **Backend:**
+   - Acesse a pasta do backend.
+   - Instale as dependências do Go.
+   - Execute o servidor:
      ```sh
      go run main.go
      ```
-   - O backend roda na porta `8080` por padrão.
+   - O backend será iniciado em `http://localhost:8080` (ou porta configurada).
 
-3. **Frontend**
-   - Os arquivos estão na pasta `frontend`.
-   - Abra o arquivo `index.html` em seu navegador para testar a interface.
+3. **Frontend:**
+   - Acesse a pasta `frontend`.
+   - Para testes locais, abra o arquivo `index.html` diretamente no navegador.
+   - Para integração completa, utilize um servidor local (ex: [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) no VS Code) para evitar restrições de CORS.
 
-## Deploy no Fly.io
+4. **Configuração de ambiente:**
+   - Certifique-se de que o frontend está configurado para consumir a API do backend local (`http://localhost:8080`).
+   - Ajuste variáveis de ambiente conforme necessário.
 
-1. Instale o Fly CLI:
-   ```sh
-   iwr https://fly.io/install.ps1 -useb | iex
-   ```
-2. Configure o app:
-   ```sh
-   fly launch
-   ```
-3. Faça o deploy:
-   ```sh
-   fly deploy
-   ```
+## Deploy Remoto
 
-## Estrutura do projeto
+- O deploy do projeto é realizado na plataforma [Fly.io](https://fly.io/).
+- O site está disponível em produção em:  
+  [https://hat-store-training.fly.dev/](https://hat-store-training.fly.dev/)
 
-```
-backend/      # Código Go do servidor e API
-frontend/     # Código do site (HTML, CSS, JS, imagens)
-Dockerfile    # Configuração para deploy containerizado
-fly.toml      # Configuração do Fly.io
-```
+## Releases
 
-## Funcionalidades
+- **Release 1.0.0:**  
+  Estrutura base do site, com listagem de chapéus, carrinho, checkout e autenticação.
 
-- Listagem de chapéus
-- Pesquisa de chapéus
-- Carrinho individual por usuário (localStorage)
-- Menu lateral (hambúrguer) para o carrinho
-- Finalização de compra com registro do pedido
-- Suporte a PIX e Boleto (códigos fictícios)
+- **Release 1.2.0:**  
+  Adição da página de documentação do trabalho avaliativo, detalhando objetivos e instruções para testes.
 
-## Documentação da API (Swagger)
+- **Release 1.2.1:**  
+  Atualização do escopo do trabalho avaliativo, com ajustes nas instruções e requisitos.
 
-A API possui documentação automática via Swagger.
+- **Release 1.3.0:**  
+  Evoluções do sistema, incluindo controle de estoque dos produtos e filtros avançados na listagem de chapéus.
 
-- Gere a documentação com:
-  ```sh
-  swag init
-  ```
-- Acesse em produção:
-  ```
-   https://hat-store.fly.dev/swagger/
-  ```
-- Os endpoints principais estão descritos e podem ser testados diretamente pela interface.
+## Links Úteis
 
-## Como contribuir
-
-1. Faça um fork do projeto
-2. Crie uma branch (`git checkout -b minha-feature`)
-3. Faça suas alterações
-4. Envie um pull request
+- [Documentação de negócio](https://hat-store-training.fly.dev/documentacao.html)
+- [Trabalho avaliativo](trabalho-avaliativo.html)
+- [Site da CWI](https://cwi.com.br/)
+- [GitLab QA](https://git.cwi.com.br/formacoes/cwi-crescer/edicao-27/qa)
+- [Azure Board](https://dev.azure.com/cwi-formacao/CWI%20Crescer/_sprints/taskboard/CWI%20Crescer%20Team/CWI%20Crescer/Iteration%201)
 
 ---
 
-Hat
+**Observação:**  
+O Hat Store é uma aplicação fictícia, sem cobranças ou compras reais.  
+Para dúvidas técnicas, consulte a documentação ou entre em contato com o responsável (Gabriel Cartelli - gabriel.cartelli@cwi.com.br)
