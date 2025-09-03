@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Trabalho Avaliativo - Hat Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .doc-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #e2d9c333;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: #232323;
+        }
+        .doc-container h1 {
+            color: #c9a94b;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .doc-section {
+            margin-bottom: 2.5rem;
+        }
+        .doc-section h2 {
+            color: #c9a94b;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .doc-section ul, .doc-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .doc-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        .doc-section strong {
+            color: #232323;
+            font-weight: bold;
+        }
+        .doc-section .sublist {
+            margin-left: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .doc-section .consideracoes {
+            margin-left: 2rem;
+            font-size: 0.98em;
+            color: #7a6a3c;
+        }
+        .doc-section .pergunta {
+            margin-top: 1.2rem;
+            padding: 0.7rem 1rem;
+            background: #f8f6f0;
+            border-left: 4px solid #c9a94b;
+            font-weight: 500;
+            color: #232323;
+            border-radius: 6px;
+        }
+        .doc-section .resposta {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: #7a6a3c;
+        }
+        .doc-section a {
+            color: #c9a94b;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <img src="imagens/logo-hatstore.png" alt="Hat Store" class="logo-header" />
+            <div class="header-titles">
+                <h1 class="titulo-header">Trabalho Avaliativo - Hat Store</h1>
+            </div>
+        </div>
+    </header>
+    <main class="doc-container">
+        <h1>Trabalho Avaliativo - Hat Store</h1>
+        <section class="doc-section">
+            <h2>Considerações Gerais</h2>
+            <ul>
+                <li><strong>O trabalho deve ser realizado individualmente.</strong></li>
+                <li>A aplicação a ser testada é a Hat Store (<a href="https://hat-store-training.fly.dev/" target="_blank">hat-store-training.fly.dev</a>).</li>
+                <li>A documentação da aplicação está disponível no rodapé do site (<a href="https://hat-store-training.fly.dev/documentacao.html" target="_blank">hat-store-training.fly.dev/documentacao.html</a>).</li>
+                <li><strong>Não é permitido utilizar inteligência artificial para realizar o trabalho</strong>, apenas para consulta de dúvidas e informações.</li>
+                <li><strong>Não é permitido copiar informações de trabalhos de outros Cresceres.</strong></li>
+                <li>O Hat Store é uma loja fictícia, portanto nenhuma cobrança ou compra real será efetuada.</li>
+                <li><strong>A entrega do trabalho deve ser feita até 08/09/2025 às 11:59:59 (horário de Brasília).</strong> Entregas após esse prazo serão desconsideradas.</li>
+                <li>Cada Crescer receberá um feedback referente ao trabalho entregue.</li>
+            </ul>
+        </section>
+        <section class="doc-section">
+            <h2>Objetivos</h2>
+            <ol>
+                <li>
+                    <strong>Escrever os casos de teste dos seguintes fluxos em gherkin:</strong>
+                    <ul class="sublist">
+                        <li>Listagem e pesquisa de chapéus;</li>
+                        <li>Fluxo de compra de chapéus;</li>
+                        <li>Funcionalidade de cupom de desconto.</li>
+                    </ul>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>Não é necessário incluir os fluxos de login e consulta de pedidos.</li>
+                            <li>Os casos de teste devem ser registrados no Test Plan.</li>
+                            <li>Em cada caso de teste deve ser indicado o <strong>Nível de Teste</strong> (Aceitação, Sistema, Integração ou Unitário).</li>
+                            <li>Em cada caso de teste deve ser indicada a <strong>Técnica de Teste</strong> utilizada, conforme a tabela abaixo:</li>
+                            <ul>
+                                <li>Técnicas de caixa-preta: Particionamento de Equivalência (EP), Análise de Valor Limite (BVA), Tabela de Decisão, Transição de Estados, Pairwise Testing (Combinatorial).</li>
+                                <li>Técnicas baseadas na experiência: Testes Exploratórios, Testes Baseados em Erro, Checklists/Definições de Comportamento.</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Executar os casos de teste que foram escritos.</strong>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>Cada caso de teste deve ser executado pelo runner do Test Plan.</li>
+                            <li>Cada caso de teste deve ter pelo menos uma evidência comprovando que foi executado com sucesso.</li>
+                            <li>Os casos de teste que falharem devem ser registrados com status de falha.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Registrar os defeitos encontrados durante os testes.</strong>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>Os defeitos devem ser registrados no board do Azure (<a href="https://dev.azure.com/cwi-formacao/CWI%20Crescer/_sprints/taskboard/CWI%20Crescer%20Team/CWI%20Crescer/Iteration%201" target="_blank">dev.azure.com/cwi-formacao</a>) na user story do seu nome.</li>
+                            <li>Os defeitos devem seguir o padrão apresentado em aula.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Considerando que esses testes foram feitos para avaliar o desenvolvimento de novas funcionalidades no site Hat Store, responda à seguinte pergunta:</strong>
+                    <div class="pergunta">
+                        Esse pacote de alterações do Hat Store com novas funcionalidades pode ser publicado no ambiente produtivo? Justifique sua resposta.
+                    </div>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>A resposta dessa pergunta deve ser entregue no <a href="https://git.cwi.com.br/formacoes/cwi-crescer/edicao-27/qa" target="_blank">GitLab</a>.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ol>
+        </section>
+    </main>
+</body>
+</html>
