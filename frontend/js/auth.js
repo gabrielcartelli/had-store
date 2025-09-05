@@ -75,8 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                // SUCESSO! Salva o token
+                // 'Salva o token e o email
                 localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('user_email', email);
 
                 showMessage(loginMessageEl, 'Login bem-sucedido! Redirecionando...', false);
 

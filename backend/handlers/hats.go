@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 )
 
@@ -125,7 +126,14 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 	var pedido Pedido
 	err := json.NewDecoder(r.Body).Decode(&pedido)
+	ip := strings.Split(r.RemoteAddr, ":")[0]
+	user := r.Header.Get("X-User-Email")
 	if err != nil {
+		if user != "" {
+			log.Printf("[ERROR][%s][%s] Pedido inválido: %v", ip, user, err)
+		} else {
+			log.Printf("[ERROR][%s] Pedido inválido: %v", ip, err)
+		}
 		http.Error(w, "Dados inválidos", http.StatusBadRequest)
 		return
 	}
@@ -141,6 +149,12 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 	pedidos = append(pedidos, pedido)
 	pedidosLock.Unlock()
 
+	if user != "" {
+		log.Printf("[INFO][%s][%s] Pedido registrado | Nome: %s | CPF: %s | Total: %.2f | Pagamento: %s | Itens: %d", ip, user, pedido.Nome, pedido.CPF, pedido.Total, pedido.Pagamento, len(pedido.Itens))
+	} else {
+		log.Printf("[INFO][%s] Pedido registrado | Nome: %s | CPF: %s | Total: %.2f | Pagamento: %s | Itens: %d", ip, pedido.Nome, pedido.CPF, pedido.Total, pedido.Pagamento, len(pedido.Itens))
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
 		"mensagem": "Pedido registrado com sucesso",
@@ -149,9 +163,15 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 
 // Handler para consultar pedidos por CPF
 func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
+	ip := strings.Split(r.RemoteAddr, ":")[0]
+	user := r.Header.Get("X-User-Email")
 	cpf := r.URL.Query().Get("cpf")
 	if cpf == "" {
-		log.Printf("[WARN] Consulta de pedidos sem CPF informado")
+		if user != "" {
+			log.Printf("[WARN][%s][%s] Consulta de pedidos sem CPF informado", ip, user)
+		} else {
+			log.Printf("[WARN][%s] Consulta de pedidos sem CPF informado", ip)
+		}
 		http.Error(w, "CPF não informado", http.StatusBadRequest)
 		return
 	}
@@ -166,16 +186,12 @@ func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Printf("[INFO] Consulta de pedidos para CPF %s: %d encontrados", cpf, len(pedidosFiltrados))
-	// Log de todos os pedidos em memória
-	if len(pedidos) == 0 {
-		log.Printf("[INFO] Nenhum pedido registrado em memória.")
+	if user != "" {
+		log.Printf("[INFO][%s][%s] Consulta de pedidos | CPF: %s | Quantidade: %d", ip, user, cpf, len(pedidosFiltrados))
 	} else {
-		log.Printf("[INFO] Pedidos em memória:")
-		for i, pedido := range pedidos {
-			log.Printf("  [%d] Nome: %s | CPF: %s | Total: %.2f | Pagamento: %s | Itens: %d", i+1, pedido.Nome, pedido.CPF, pedido.Total, pedido.Pagamento, len(pedido.Itens))
-		}
+		log.Printf("[INFO][%s] Consulta de pedidos | CPF: %s | Quantidade: %d", ip, cpf, len(pedidosFiltrados))
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(pedidosFiltrados)
 }

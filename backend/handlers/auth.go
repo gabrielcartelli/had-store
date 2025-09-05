@@ -5,6 +5,7 @@ import (
 	"hat-store-training/backend/models"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -47,6 +48,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. Pega o email e a senha que o usuário enviou
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		log.Printf("[ERROR] Registro inválido: %v", err)
 		http.Error(w, "Requisição inválida", http.StatusBadRequest)
 		return
 	}
@@ -56,6 +58,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 2. Verifica se o membro já existe na nossa lista
 	if _, exists := users[creds.Email]; exists {
+		log.Printf("[WARN] Tentativa de registro para email já existente: %s", creds.Email)
 		http.Error(w, "Usuário já existe", http.StatusConflict)
 		return
 	}
@@ -64,6 +67,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	// Nós NUNCA guardamos a senha real. Guardamos uma versão embaralhada dela.
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(creds.Password), bcrypt.DefaultCost)
 	if err != nil {
+		log.Printf("[ERROR] Erro ao processar senha para %s: %v", creds.Email, err)
 		http.Error(w, "Erro ao processar a senha", http.StatusInternalServerError)
 		return
 	}
@@ -77,7 +81,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	users[creds.Email] = newUser
 	userIDCounter++
 
-	log.Printf("AUDITORIA: Novo usuário registrado com sucesso: %s", creds.Email)
+	ip := strings.Split(r.RemoteAddr, ":")[0]
+	log.Printf("[INFO][%s][%s] Novo usuário registrado", ip, creds.Email)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Usuário criado com sucesso!"})
 }
@@ -98,6 +103,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var creds models.LoginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		log.Printf("[ERROR] Login inválido: %v", err)
 		http.Error(w, "Requisição inválida", http.StatusBadRequest)
 		return
 	}
@@ -108,7 +114,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Se já errou 5 vezes e a última tentativa foi nos últimos 15 minutos, bloqueia.
 	if ok && attempt.Count >= 5 && time.Since(attempt.LastAttempt) < 15*time.Minute {
 		attemptsMutex.Unlock()
-		log.Printf("AUDITORIA: Tentativa de login bloqueada para o usuário: %s", creds.Email)
+		log.Printf("[WARN] Login bloqueado por excesso de tentativas: %s", creds.Email)
 		http.Error(w, "Muitas tentativas de login. Tente novamente mais tarde.", http.StatusTooManyRequests)
 		return
 	}
@@ -121,12 +127,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Se o usuário não existe OU o "aperto de mão" está errado...
 	if !exists || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password)) != nil {
-		// --- CRITÉRIO 6: Log de auditoria ---
-		log.Printf("AUDITORIA: Tentativa de login falhou para o usuário: %s", creds.Email)
+		log.Printf("[WARN] Login falhou para usuário: %s", creds.Email)
 
-		// Anota o erro no nosso caderninho
 		attemptsMutex.Lock()
-		// Se o bloqueio expirou, reseta a contagem
 		if time.Since(attempt.LastAttempt) >= 15*time.Minute {
 			attempt.Count = 0
 		}
@@ -167,7 +170,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- CRITÉRIOS 2 e 6: Acessa o site e loga sucesso ---
-	log.Printf("AUDITORIA: Login bem-sucedido para o usuário: %s", creds.Email)
+	ip := strings.Split(r.RemoteAddr, ":")[0]
+	log.Printf("[INFO][%s][%s] Login bem-sucedido", ip, creds.Email)
 
 	// Envia o carimbo de volta para o frontend
 	w.Header().Set("Content-Type", "application/json")
