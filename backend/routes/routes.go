@@ -17,7 +17,14 @@ var jwtKey = []byte("e3e6c6c2-9b7d-4c5e-8c1a-2f7b8f8e2a1d")
 // Middleware para logar cada request
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Recebida requisição: %s %s", r.Method, r.URL.Path)
+		// Log padronizado: método, rota, IP, usuário (se disponível)
+		user := r.Header.Get("X-User-Email")
+		ip := strings.Split(r.RemoteAddr, ":")[0]
+		if user != "" {
+			log.Printf("[INFO][%s][%s] %s %s", ip, user, r.Method, r.URL.Path)
+		} else {
+			log.Printf("[INFO][%s] %s %s", ip, r.Method, r.URL.Path)
+		}
 		next.ServeHTTP(w, r)
 	})
 }
@@ -65,22 +72,13 @@ func InitializeRoutes() *mux.Router {
 
 	// 3. Sub-roteador para rotas da API públicas
 	apiPublic := router.PathPrefix("/api").Subrouter()
-	apiPublic.HandleFunc("/hats", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[INFO] Requisição recebida em /api/hats: %s %s", r.Method, r.URL.Path)
-		handlers.GetHats(w, r)
-	}).Methods("GET")
+	apiPublic.HandleFunc("/hats", handlers.GetHats).Methods("GET")
 
 	// 4. Sub-roteador para rotas da API protegidas
 	apiProtected := router.PathPrefix("/api").Subrouter()
 	apiProtected.Use(authMiddleware)
-	apiProtected.HandleFunc("/pedido", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[INFO] Requisição recebida em /api/pedido: %s %s", r.Method, r.URL.Path)
-		handlers.RegistrarPedido(w, r)
-	}).Methods("POST")
-	apiProtected.HandleFunc("/pedidos", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[INFO] Requisição recebida em /api/pedidos: %s %s", r.Method, r.URL.Path)
-		handlers.ConsultarPedidos(w, r)
-	}).Methods("GET")
+	apiProtected.HandleFunc("/pedido", handlers.RegistrarPedido).Methods("POST")
+	apiProtected.HandleFunc("/pedidos", handlers.ConsultarPedidos).Methods("GET")
 
 	return router
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"hat-store-training/backend/models"
+	"log"
 	"net/http"
 	"regexp"
 	"sync"
@@ -35,12 +36,14 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&pedido)
 	if err != nil {
+		log.Printf("[ERROR] CriarPedido: Dados inválidos | Erro: %v", err)
 		http.Error(w, "Dados inválidos", http.StatusBadRequest)
 		return
 	}
 
 	// Só retorna erro se o cupom for HAT10 e o CPF já usou HAT10 antes
 	if pedido.Cupom == "HAT10" && CPFUsouHat10(pedido.CPF) {
+		log.Printf("[WARN] CriarPedido: Cupom HAT10 já utilizado | CPF: %s", pedido.CPF)
 		http.Error(w, "Cupom HAT10 já utilizado por este CPF.", http.StatusForbidden)
 		return
 	}
@@ -60,35 +63,42 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 
 	// Validações (mantidas do seu código)
 	if len(pedido.Nome) < 3 {
+		log.Printf("[WARN] CriarPedido: Nome inválido | Nome: %s", pedido.Nome)
 		http.Error(w, "Nome inválido", http.StatusBadRequest)
 		return
 	}
 	cpfRegex := regexp.MustCompile(`^\d{3}\.\d{3}\.\d{3}-\d{2}$`)
 	if !cpfRegex.MatchString(pedido.CPF) {
+		log.Printf("[WARN] CriarPedido: CPF inválido | CPF: %s", pedido.CPF)
 		http.Error(w, "CPF inválido", http.StatusBadRequest)
 		return
 	}
 	emailRegex := regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
 	if !emailRegex.MatchString(pedido.Email) {
+		log.Printf("[WARN] CriarPedido: Email inválido | Email: %s", pedido.Email)
 		http.Error(w, "Email inválido", http.StatusBadRequest)
 		return
 	}
 	telRegex := regexp.MustCompile(`^\(\d{2}\) \d{5}-\d{4}$`)
 	if !telRegex.MatchString(pedido.Telefone) {
+		log.Printf("[WARN] CriarPedido: Telefone inválido | Telefone: %s", pedido.Telefone)
 		http.Error(w, "Telefone inválido", http.StatusBadRequest)
 		return
 	}
 	cepRegex := regexp.MustCompile(`^\d{5}-\d{3}$`)
 	if !cepRegex.MatchString(pedido.CEP) {
+		log.Printf("[WARN] CriarPedido: CEP inválido | CEP: %s", pedido.CEP)
 		http.Error(w, "CEP inválido", http.StatusBadRequest)
 		return
 	}
 	ufRegex := regexp.MustCompile(`^[A-Za-z]{2}$`)
 	if !ufRegex.MatchString(pedido.UF) {
+		log.Printf("[WARN] CriarPedido: UF inválido | UF: %s", pedido.UF)
 		http.Error(w, "UF inválido", http.StatusBadRequest)
 		return
 	}
 	if pedido.Pagamento != "pix" && pedido.Pagamento != "boleto" {
+		log.Printf("[WARN] CriarPedido: Pagamento inválido | Pagamento: %s", pedido.Pagamento)
 		http.Error(w, "Forma de pagamento inválida", http.StatusBadRequest)
 		return
 	}
@@ -100,6 +110,7 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		hat10Mutex.Unlock()
 	}
 
+	log.Printf("[INFO] Pedido criado | Nome: %s | CPF: %s | Total: %.2f | Pagamento: %s | Itens: %d", pedido.Nome, pedido.CPF, pedido.Total, pedido.Pagamento, len(pedido.Itens))
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(pedido)
 }

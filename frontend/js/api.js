@@ -2,6 +2,7 @@
 async function fetchApi(path, options = {}) {
     // Pega o token de login
     const token = localStorage.getItem('jwt_token');
+    const userEmail = localStorage.getItem('user_email');
 
     const defaultHeaders = {
         'Content-Type': 'application/json',
@@ -10,6 +11,9 @@ async function fetchApi(path, options = {}) {
     // Se o token existir, adiciona ao cabeçalho de Autorização
     if (token) {
         defaultHeaders['Authorization'] = `Bearer ${token}`;
+    }
+    if (userEmail) {
+        defaultHeaders['X-User-Email'] = userEmail;
     }
 
     // Combina os cabeçalhos padrão com quaisquer outros que a chamada específica precise
