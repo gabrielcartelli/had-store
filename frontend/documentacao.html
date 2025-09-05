@@ -20,13 +20,13 @@
         <section>
             <h3>Visão Geral</h3>
             <p>
-                A Hat Store é uma loja virtual especializada em chapéus, permitindo que clientes naveguem por produtos, adicionem itens ao carrinho, realizem compras e consultem seus pedidos. O sistema é composto por um frontend em HTML/CSS/JS e um backend em Go, com autenticação via JWT e integração de métodos de pagamento fictícios (PIX e boleto).
+                A Hat Store é uma loja virtual especializada em chapéus, permitindo que clientes naveguem por produtos, adicionem itens ao carrinho, realizem compras e consultem seus pedidos. O sistema é composto por um frontend em HTML/CSS/JS e um backend em Go, com autenticação e integração de métodos de pagamento fictícios (PIX e boleto).
             </p>
         </section>
         <section>
             <h3>Fluxo de Funcionamento</h3>
             <ol>
-                <li><strong>Cadastro e Login:</strong> O usuário pode criar uma conta informando email e senha. Após o login, recebe um token JWT para autenticação nas operações protegidas.</li>
+                <li><strong>Cadastro e Login:</strong> O usuário pode criar uma conta informando email e senha. O fluxos de checkout e consulta de pedidos só podem ser realizados por usuários autenticados.</li>
                 <li><strong>Listagem de Produtos:</strong> Todos os chapéus disponíveis são exibidos na página inicial. O usuário pode pesquisar e visualizar detalhes dos produtos.</li>
                 <li><strong>Carrinho de Compras:</strong> O cliente adiciona chapéus ao carrinho, ajusta quantidades e aplica cupons de desconto (ex: HAT10 para 10% off no primeiro pedido).</li>
                 <li><strong>Checkout:</strong> Para finalizar a compra, o usuário preenche dados pessoais, endereço e escolhe o método de pagamento (PIX ou boleto). O cupom HAT10 só pode ser usado uma vez por CPF.</li>
@@ -38,7 +38,7 @@
             <h3>Regras de Negócio</h3>
             <ul>
                 <li>O cupom <strong>HAT10</strong> concede 10% de desconto apenas no primeiro pedido de cada CPF.</li>
-                <li>Pedidos só podem ser registrados por usuários autenticados (token JWT válido).</li>
+                <li>Pedidos só podem ser registrados por usuários autenticados.</li>
                 <li>Dados obrigatórios: nome, CPF, email, telefone, endereço, cidade, UF, método de pagamento.</li>
                 <li>Validações de formato para CPF, email, telefone e CEP são realizadas no frontend e backend.</li>
                 <li>Pedidos e usuários são armazenados em memória (não persistente).</li>
@@ -63,7 +63,7 @@
                     <strong>Consulta de pedidos por CPF:</strong> Usuários autenticados podem consultar o histórico de compras informando seu CPF, visualizando detalhes dos pedidos realizados.
                 </li>
                 <li>
-                    <strong>Documentação da API via Swagger:</strong> Disponível em <code>/swagger/</code>, facilita o entendimento e testes das rotas do backend.
+                    <strong>Documentação da API via Swagger:</strong> Disponível em <code>https://hat-store-training.fly.dev/swagger/index.html</code>, facilita o entendimento e testes das rotas do backend.
                 </li>
             </ul>
         </section>
@@ -71,7 +71,7 @@
             <h3>Fluxo de API</h3>
             <ul>
                 <li><strong>/auth/register</strong>: Criação de conta de usuário.</li>
-                <li><strong>/auth/login</strong>: Autenticação e obtenção de token JWT.</li>
+                <li><strong>/auth/login</strong>: Autenticação.</li>
                 <li><strong>/api/hats</strong>: Listagem de chapéus (público).</li>
                 <li><strong>/api/pedido</strong>: Registro de pedido (protegido).</li>
                 <li><strong>/api/pedidos?cpf=...</strong>: Consulta de pedidos por CPF (protegido).</li>
@@ -80,10 +80,10 @@
         <section>
             <h3>Observações Técnicas</h3>
             <ul>
-                <li>Frontend utiliza <code>localStorage</code> para armazenar carrinho e token JWT.</li>
-                <li>Backend em Go, rotas protegidas por middleware JWT.</li>
+                <li>Frontend utiliza <code>localStorage</code> para armazenar carrinho e token.</li>
+                <li>Backend em Go, rotas protegidas.</li>
                 <li>Pedidos e usuários não são persistidos em banco de dados.</li>
-                <li>API documentada via Swagger (<code>/swagger/</code>).</li>
+                <li>API documentada via Swagger (<code>https://hat-store-training.fly.dev/swagger/index.html</code>).</li>
             </ul>
         </section>
     </main>
