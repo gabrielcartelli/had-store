@@ -28,8 +28,8 @@
             <ol>
                 <li><strong>Cadastro e Login:</strong> O usuário pode criar uma conta informando email e senha. O fluxos de checkout e consulta de pedidos só podem ser realizados por usuários autenticados.</li>
                 <li><strong>Listagem de Produtos:</strong> Todos os chapéus disponíveis são exibidos na página inicial. O usuário pode pesquisar e visualizar detalhes dos produtos.</li>
-                <li><strong>Carrinho de Compras:</strong> O cliente adiciona chapéus ao carrinho, ajusta quantidades e aplica cupons de desconto (ex: HAT10 para 10% off no primeiro pedido).</li>
-                <li><strong>Checkout:</strong> Para finalizar a compra, o usuário preenche dados pessoais, endereço e escolhe o método de pagamento (PIX ou boleto). O cupom HAT10 só pode ser usado uma vez por CPF.</li>
+                <li><strong>Carrinho de Compras:</strong> O cliente adiciona chapéus ao carrinho, ajusta quantidades e aplica cupons de desconto (ex: HATOFF para 20% off no primeiro pedido).</li>
+                <li><strong>Checkout:</strong> Para finalizar a compra, o usuário preenche dados pessoais, endereço e escolhe o método de pagamento (PIX ou boleto). O cupom HATOFF só pode ser usado uma vez por CPF.</li>
                 <li><strong>Registro do Pedido:</strong> O pedido é enviado ao backend, que valida os dados, calcula o total (aplicando descontos se aplicável) e armazena em memória.</li>
                 <li><strong>Consulta de Pedidos:</strong> O cliente pode consultar o histórico de pedidos informando o CPF, visualizando detalhes dos pedidos realizados.</li>
             </ol>
@@ -37,7 +37,7 @@
         <section>
             <h3>Regras de Negócio</h3>
             <ul>
-                <li>O cupom <strong>HAT10</strong> concede 10% de desconto apenas no primeiro pedido de cada CPF.</li>
+                <li>O cupom <strong>HATOFF</strong> concede 20% de desconto apenas no primeiro pedido de cada CPF.</li>
                 <li>Pedidos só podem ser registrados por usuários autenticados.</li>
                 <li>Dados obrigatórios: nome, CPF, email, telefone, endereço, cidade, UF, método de pagamento.</li>
                 <li>Validações de formato para CPF, email, telefone e CEP são realizadas no frontend e backend.</li>

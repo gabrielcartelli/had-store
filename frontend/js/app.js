@@ -224,7 +224,7 @@ function aplicarCupom() {
     if (!cupomInput || !erroCupom) return;
 
     const cupom = cupomInput.value.trim().toUpperCase();
-    if (cupom === "HAT10") {
+    if (cupom === "HATOFF") {
         localStorage.setItem('cupom', cupom);
         erroCupom.textContent = "Cupom aplicado!";
         erroCupom.className = 'cupom-sucesso';
@@ -319,10 +319,10 @@ function atualizarCarrinho() {
     let descontoHtml = '';
     let totalComDesconto = total;
 
-    if (cupom === 'HAT10') {
-        const desconto = total * 0.10;
+    if (cupom === 'HATOFF') {
+        const desconto = total * 0.18;
         totalComDesconto -= desconto;
-    descontoHtml = `<div class="cart-cupom-info">Cupom HAT10 aplicado: -R$ ${desconto.toFixed(2)}</div>`;
+        descontoHtml = `<div class="cart-cupom-info">Cupom HATOFF aplicado: -R$ ${desconto.toFixed(2)}</div>`;
     }
 
     totalDiv.innerHTML = `

@@ -55,10 +55,10 @@ function montarResumoPedido(itens) {
     let totalComDesconto = total;
 
     // Aplica o desconto se o cupom for válido
-    if (cupom === "HAT10") {
-        const desconto = total * 0.10;
+    if (cupom === "HATOFF") {
+        const desconto = total * 0.18;
         totalComDesconto -= desconto;
-    descontoHtml = `<div class="pedido-desconto">Cupom HAT10: -R$ ${desconto.toFixed(2)}</div>`;
+    descontoHtml = `<div class="pedido-desconto">Cupom HATOFF: -R$ ${desconto.toFixed(2)}</div>`;
     }
 
     // Monta o HTML final do resumo
@@ -98,7 +98,7 @@ async function handleFormSubmit(event) {
 
     } catch (error) {
         // 5. Trata os erros
-    if (error.message.includes('Cupom HAT10 já utilizado')) {
+    if (error.message.includes('Cupom HATOFF já utilizado')) {
             exibirModalCompraNegada();
         } else {
             console.error('Erro ao finalizar pedido:', error);
@@ -214,7 +214,7 @@ function exibirCodigoPagamento(metodo) {
 
 function exibirModalCompraNegada() {
     const bodyHtml = `
-    <p style="color:#e11d48;font-weight:bold;">O cupom HAT10 só pode ser usado uma vez por CPF.</p>
+    <p style="color:#e11d48;font-weight:bold;">O cupom HATOFF só pode ser usado uma vez por CPF.</p>
         <p>Por favor, remova o cupom no carrinho e tente finalizar sua compra novamente.</p>
         <button id="fechar-modal-negada" class="auth-button">Entendi</button>
     `;

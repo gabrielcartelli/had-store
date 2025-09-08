@@ -23,6 +23,7 @@ type Pedido struct {
 	Pagamento string      `json:"pagamento"`
 	Itens     []HatPedido `json:"itens"`
 	Total     float64     `json:"total"`
+	Cupom     string      `json:"cupom"`
 }
 
 // Estrutura dos itens do pedido
@@ -41,10 +42,6 @@ var hats = []Hat{
 	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90},
 	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90},
 	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90},
-	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90},
-	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90},
-	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90},
-	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90},
 	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90},
 	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90},
 	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90},
@@ -146,6 +143,22 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 	total := 0.0
 	for _, item := range pedido.Itens {
 		total += item.Price * float64(item.Quantidade)
+	}
+
+	// Verifica se é o primeiro pedido do CPF
+	primeiroPedido := true
+	pedidosLock.Lock()
+	for _, p := range pedidos {
+		if p.CPF == pedido.CPF {
+			primeiroPedido = false
+			break
+		}
+	}
+	pedidosLock.Unlock()
+
+	// Aplica desconto HATOFF só se for o primeiro pedido desse CPF
+	if pedido.Cupom == "HATOFF" && primeiroPedido {
+		total = total * 0.82
 	}
 	pedido.Total = total
 
