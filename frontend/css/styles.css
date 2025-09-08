@@ -1060,7 +1060,17 @@ body {
 }
 
 .pedidos-list .pedido-card strong {
-    color: #111827; /* Cor mais escura para o texto em negrito */
+    color: var(--cor-dourado-dark);
+    font-weight: bold;
+    background: none;
+}
+
+/* Destaca informações principais do pedido */
+.pedido-info-destaque {
+    color: #232323;
+    font-weight: bold;
+    background: none;
+    font-size: 1.08em;
 }
 
 .pedidos-list .pedido-itens {
