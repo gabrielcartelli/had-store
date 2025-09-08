@@ -217,14 +217,15 @@ function aplicarCupom() {
     if (!cupomInput || !erroCupom) return;
 
     const cupom = cupomInput.value.trim().toUpperCase();
-    if (cupom) {
+    if (cupom === "HAT10") {
         localStorage.setItem('cupom', cupom);
         erroCupom.textContent = "Cupom aplicado!";
         erroCupom.className = 'cupom-sucesso';
-        atualizarCarrinho(); // Atualiza o total com o desconto
+        atualizarCarrinho();
     } else {
-        erroCupom.textContent = "Digite um cupom válido.";
+        erroCupom.textContent = "Cupom inválido.";
         erroCupom.className = 'input-error';
+        localStorage.removeItem('cupom');
     }
 }
 
