@@ -1067,7 +1067,7 @@ body {
 
 /* Destaca informações principais do pedido */
 .pedido-info-destaque {
-    color: #232323;
+    color: #000;
     font-weight: bold;
     background: none;
     font-size: 1.08em;

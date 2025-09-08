@@ -47,8 +47,8 @@ function montarResumoPedido(itens) {
     
     // Cria a lista de itens
     let itensHtml = itens.map(item => {
-        total += item.preco * (item.quantidade || 1);
-        return `<li>${item.nome} (${item.quantidade || 1}x) - <strong>R$ ${item.preco.toFixed(2)}</strong></li>`;
+        total += item.price * (item.quantidade || 1);
+        return `<li>${item.nome} (${item.quantidade || 1}x) - <strong>R$ ${item.price.toFixed(2)}</strong></li>`;
     }).join('');
 
     let descontoHtml = '';
@@ -116,7 +116,7 @@ function montarObjetoPedido() {
     const itensPedido = carrinho.map(item => ({
         id: item.id,
         nome: item.nome,
-        price: item.preco, // O backend espera 'price', não 'preco'
+        price: item.price, // O backend espera 'price', não 'preco'
         quantidade: item.quantidade
     }));
 

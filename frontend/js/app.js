@@ -167,7 +167,7 @@ async function handleConsultaPedidos(event) {
                 <div class="pedido-itens">
                     <strong>Itens:</strong>
                     <ul>
-                        ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
+                        ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.price.toFixed(2)}</li>`).join('')}
                     </ul>
                 </div>
             `;
@@ -197,8 +197,8 @@ function exibirChapeus(hats) {
         hatCard.innerHTML = `
             <img src="imagens/chapeu-${hat.id}.jpg" alt="${hat.nome}" onerror="this.src='imagens/default.jpg'">
             <h3>${hat.nome}</h3>
-            <p>Preço: R$ ${hat.preco.toFixed(2)}</p>
-            <button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-preco="${hat.preco}">Adicionar ao carrinho</button>
+            <p>Preço: R$ ${hat.price.toFixed(2)}</p>
+            <button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>
         `;
         hatsDiv.appendChild(hatCard);
     });
@@ -206,8 +206,8 @@ function exibirChapeus(hats) {
     // Adiciona event listeners aos novos botões
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (event) => {
-            const { id, nome, preco } = event.target.dataset;
-            adicionarAoCarrinho(parseInt(id), nome, parseFloat(preco));
+            const { id, nome, price } = event.target.dataset;
+            adicionarAoCarrinho(parseInt(id), nome, parseFloat(price));
         });
     });
 }
@@ -240,12 +240,12 @@ function aplicarCupom() {
 //
 // FUNÇÕES DO CARRINHO
 //
-function adicionarAoCarrinho(id, nome, preco) {
+function adicionarAoCarrinho(id, nome, price) {
     const itemExistente = carrinho.find(item => item.id === id);
     if (itemExistente) {
         itemExistente.quantidade += 1;
     } else {
-        carrinho.push({ id, nome, preco, quantidade: 1 });
+        carrinho.push({ id, nome, price, quantidade: 1 });
     }
     salvarCarrinho();
     atualizarCarrinho();
@@ -289,13 +289,13 @@ function atualizarCarrinho() {
     let total = 0;
     cartDiv.innerHTML = '';
     carrinho.forEach(item => {
-        total += item.preco * item.quantidade;
+        total += item.price * item.quantidade;
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cart-item';
         itemDiv.innerHTML = `
             <div class="cart-item-info">
                 <span class="cart-item-nome">${item.nome}</span>
-                <span class="cart-item-preco">R$ ${item.preco.toFixed(2)}</span>
+                <span class="cart-item-preco">R$ ${item.price.toFixed(2)}</span>
                 <div class="cart-item-actions">
                     <button class="qty-btn" data-id="${item.id}" data-delta="-1" title="Diminuir">-</button>
                     <span>${item.quantidade}</span>

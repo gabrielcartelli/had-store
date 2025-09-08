@@ -43,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = 'pedido-card';
                 card.innerHTML = `
-                    <p><strong>Cliente:</strong> ${pedido.nome}</p>
-                    <p><strong>CPF:</strong> ${pedido.cpf}</p>
-                    <p><strong>Pagamento:</strong> ${pedido.pagamento}</p>
-                    <p><strong>Total:</strong> R$ ${pedido.total.toFixed(2)}</p>
+                    <p class="pedido-info-destaque"><strong>Cliente:</strong> ${pedido.nome}</p>
+                    <p class="pedido-info-destaque"><strong>CPF:</strong> ${pedido.cpf}</p>
+                    <p class="pedido-info-destaque"><strong>Pagamento:</strong> ${pedido.pagamento}</p>
+                    <p class="pedido-info-destaque"><strong>Total:</strong> R$ ${pedido.total.toFixed(2)}</p>
                     <div class="pedido-itens">
                         <strong>Itens do Pedido:</strong>
                         <ul>
-                            ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.preco.toFixed(2)}</li>`).join('')}
+                            ${pedido.itens.map(item => `<li>${item.nome} (${item.quantidade || 1}x) - R$ ${item.price.toFixed(2)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
