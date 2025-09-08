@@ -296,7 +296,7 @@ const docTemplate = `{
                 "nome": {
                     "type": "string"
                 },
-                "preco": {
+                "price": {
                     "type": "number"
                 },
                 "quantidade": {
@@ -308,6 +308,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
+                    "type": "string"
+                },
+                "cupom": {
                     "type": "string"
                 },
                 "email": {

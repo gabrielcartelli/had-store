@@ -290,7 +290,7 @@
                 "nome": {
                     "type": "string"
                 },
-                "preco": {
+                "price": {
                     "type": "number"
                 },
                 "quantidade": {
@@ -302,6 +302,9 @@
             "type": "object",
             "properties": {
                 "cpf": {
+                    "type": "string"
+                },
+                "cupom": {
                     "type": "string"
                 },
                 "email": {

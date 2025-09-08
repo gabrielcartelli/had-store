@@ -6,7 +6,7 @@ definitions:
         type: integer
       nome:
         type: string
-      preco:
+      price:
         type: number
       quantidade:
         type: integer
@@ -14,6 +14,8 @@ definitions:
   handlers.Pedido:
     properties:
       cpf:
+        type: string
+      cupom:
         type: string
       email:
         type: string
