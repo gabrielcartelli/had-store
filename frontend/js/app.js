@@ -213,7 +213,7 @@ function exibirChapeus(hats) {
 }
 
 function filtrarChapeus() {
-    const termo = document.getElementById('search-hat').value.toLowerCase();
+    const termo = 'Beanie';// document.getElementById('search-hat').value.toLowerCase();
     const filtrados = todosChapeus.filter(hat => hat.nome.toLowerCase().includes(termo));
     exibirChapeus(filtrados);
 }
