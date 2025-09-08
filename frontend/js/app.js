@@ -6,6 +6,13 @@ let carrinho = [];
 
 // Função principal que roda quando o HTML está pronto
 document.addEventListener('DOMContentLoaded', () => {
+    // Delegação de evento para garantir que o botão de fechar o carrinho funcione sempre
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'close-cart') {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            if (cartSidebar) cartSidebar.classList.remove('open');
+        }
+    });
     // Botão de carrinho no header abre a sidebar do carrinho
     const headerCartBtn = document.getElementById('header-cart-btn');
     const cartSidebar = document.getElementById('cart-sidebar');
