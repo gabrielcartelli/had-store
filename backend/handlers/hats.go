@@ -29,7 +29,7 @@ type Pedido struct {
 type HatPedido struct {
 	ID         int     `json:"id"`
 	Nome       string  `json:"nome"`
-	Preco      float64 `json:"preco"`
+	Price      float64 `json:"price"`
 	Quantidade int     `json:"quantidade"`
 }
 
@@ -141,7 +141,7 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 	// Calcular o total do pedido
 	total := 0.0
 	for _, item := range pedido.Itens {
-		total += item.Preco * float64(item.Quantidade)
+		total += item.Price * float64(item.Quantidade)
 	}
 	pedido.Total = total
 
