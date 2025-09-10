@@ -56,7 +56,7 @@ function montarResumoPedido(itens) {
 
     // Aplica o desconto se o cupom for válido
     if (cupom === "HATOFF") {
-        const desconto = total * 0.18;
+        const desconto = total * 0.20;
         totalComDesconto -= desconto;
     descontoHtml = `<div class="pedido-desconto">Cupom HATOFF: -R$ ${desconto.toFixed(2)}</div>`;
     }

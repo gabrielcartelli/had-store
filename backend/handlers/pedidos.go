@@ -56,7 +56,7 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 
 	// Aplica desconto HATOFF só se for a primeira vez desse CPF
 	if pedido.Cupom == "HATOFF" {
-		total = total * 0.82
+		total = total * 0.80
 	}
 
 	pedido.Total = total

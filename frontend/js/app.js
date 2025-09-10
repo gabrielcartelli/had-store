@@ -213,7 +213,7 @@ function exibirChapeus(hats) {
 }
 
 function filtrarChapeus() {
-    const termo = 'beanie';// document.getElementById('search-hat').value.toLowerCase();
+    const termo = document.getElementById('search-hat').value.toLowerCase();
     const filtrados = todosChapeus.filter(hat => hat.nome.toLowerCase().includes(termo));
     exibirChapeus(filtrados);
 }
@@ -320,7 +320,7 @@ function atualizarCarrinho() {
     let totalComDesconto = total;
 
     if (cupom === 'HATOFF') {
-        const desconto = total * 0.18;
+        const desconto = total * 0.20;
         totalComDesconto -= desconto;
         descontoHtml = `<div class="cart-cupom-info">Cupom HATOFF aplicado: -R$ ${desconto.toFixed(2)}</div>`;
     }

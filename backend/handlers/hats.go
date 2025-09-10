@@ -158,7 +158,7 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 
 	// Aplica desconto HATOFF só se for o primeiro pedido desse CPF
 	if pedido.Cupom == "HATOFF" && primeiroPedido {
-		total = total * 0.82
+		total = total * 0.80
 	}
 	pedido.Total = total
 
