@@ -40,3 +40,5 @@ async function fetchApi(path, options = {}) {
     }
     return {};
 }
+
+module.exports = { fetchApi };

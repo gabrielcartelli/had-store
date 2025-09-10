@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.hidden = !loginForm.hidden;
         registerForm.hidden = !registerForm.hidden;
     };
+    window.toggleForms = toggleForms;
 
     // Event listeners para os botões de alternância
     showRegisterButton.addEventListener('click', toggleForms);
