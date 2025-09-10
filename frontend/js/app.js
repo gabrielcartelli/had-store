@@ -195,7 +195,7 @@ function exibirChapeus(hats) {
         const hatCard = document.createElement('div');
         hatCard.className = 'hat-card';
         hatCard.innerHTML = `
-            <img src="imagens/chapeu-${hat.id}.jpg" alt="${hat.nome}" onerror="this.src='imagens/default.jpg'">
+            <img src="imagens/chapeu-${hat.id}.jpg" alt="${hat.nome}" onerror="this.src='imagens/logo-hatstore.png'">
             <h3>${hat.nome}</h3>
             <p>Preço: R$ ${hat.price.toFixed(2)}</p>
             <button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>
