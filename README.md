@@ -54,11 +54,11 @@ Este repositório contém o projeto **Hat Store**, uma loja fictícia de chapéu
 - **Release 1.2.0:**  
   Adição da página de documentação do trabalho avaliativo, detalhando objetivos e instruções para testes.
 
-- **Release 1.2.1:**  
-  Atualização do escopo do trabalho avaliativo, com ajustes nas instruções e requisitos.
+- **Release 1.2.2**
+  Corrige alguns bugs existentes nas versões anteriores.
 
-- **Release 1.3.0:**  
-  Evoluções do sistema, incluindo controle de estoque dos produtos e filtros avançados na listagem de chapéus.
+- **Release 1.2.3:**  
+  Atualização do escopo do trabalho avaliativo, com ajustes nas instruções e requisitos e bugs propositais.
 
 ## Links Úteis
 
