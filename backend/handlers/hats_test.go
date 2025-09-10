@@ -16,12 +16,57 @@ func TestGetHats(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("esperado status 200, recebeu %d", resp.StatusCode)
 	}
-	var result []Hat
+	type HatComEstoque struct {
+		ID         int     `json:"id"`
+		Nome       string  `json:"nome"`
+		Price      float64 `json:"price"`
+		Quantidade int     `json:"quantidade"`
+		TemEstoque bool    `json:"temEstoque"`
+	}
+	var result []HatComEstoque
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		t.Errorf("erro ao decodificar resposta: %v", err)
 	}
 	if len(result) == 0 {
 		t.Errorf("esperado lista de chapéus, recebeu vazia")
+	}
+	for _, hat := range result {
+		if hat.Quantidade > 0 && !hat.TemEstoque {
+			t.Errorf("chapéu %s deveria ter estoque, mas temEstoque=false", hat.Nome)
+		}
+		if hat.Quantidade == 0 && hat.TemEstoque {
+			t.Errorf("chapéu %s não deveria ter estoque, mas temEstoque=true", hat.Nome)
+		}
+	}
+}
+func TestRegistrarPedido_SemEstoque(t *testing.T) {
+	// Zera o estoque do chapéu 1
+	for i := range hats {
+		if hats[i].ID == 1 {
+			hats[i].Quantidade = 0
+		}
+	}
+	pedido := Pedido{
+		Nome:      "Cliente Teste",
+		CPF:       "12345678900",
+		Email:     "cliente@teste.com",
+		Pagamento: "pix",
+		Itens:     []HatPedido{{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 1}},
+		Cupom:     "",
+	}
+	jsonBody, _ := json.Marshal(pedido)
+	req := httptest.NewRequest(http.MethodPost, "/pedido", bytes.NewBuffer(jsonBody))
+	w := httptest.NewRecorder()
+	RegistrarPedido(w, req)
+	resp := w.Result()
+	if resp.StatusCode != http.StatusConflict {
+		t.Errorf("esperado status 409 (sem estoque), recebeu %d", resp.StatusCode)
+	}
+	// Restaura estoque para outros testes
+	for i := range hats {
+		if hats[i].ID == 1 {
+			hats[i].Quantidade = 10
+		}
 	}
 }
 

@@ -31,14 +31,32 @@ func CPFUsouHatOff(cpf string) bool {
 
 func CriarPedido(w http.ResponseWriter, r *http.Request) {
 	var pedido models.Pedido
-
+	var err error
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&pedido)
+	err = decoder.Decode(&pedido)
 	if err != nil {
 		log.Printf("[ERROR] CriarPedido: Dados inválidos | Erro: %v", err)
 		http.Error(w, "Dados inválidos", http.StatusBadRequest)
 		return
+	}
+
+	// Controle de estoque
+	for _, item := range pedido.Itens {
+		encontrado := false
+		for i := range hats {
+			if hats[i].ID == item.ID {
+				encontrado = true
+				if hats[i].Quantidade < item.Quantidade {
+					http.Error(w, "Produto sem estoque suficiente: "+hats[i].Nome, http.StatusConflict)
+					return
+				}
+			}
+		}
+		if !encontrado {
+			http.Error(w, "Produto não encontrado: "+item.Nome, http.StatusNotFound)
+			return
+		}
 	}
 
 	// Só retorna erro se o cupom for HATOFF e o CPF já usou HATOFF antes
@@ -48,10 +66,15 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Calcula total
+	// Calcula total e desconta estoque
 	total := 0.0
 	for _, item := range pedido.Itens {
 		total += item.Price * float64(item.Quantidade)
+		for i := range hats {
+			if hats[i].ID == item.ID {
+				hats[i].Quantidade -= item.Quantidade
+			}
+		}
 	}
 
 	// Aplica desconto HATOFF só se for a primeira vez desse CPF

@@ -8,11 +8,38 @@ import (
 	"sync"
 )
 
+// ListarEstoque godoc
+// @Summary Lista o estoque de chapéus
+// @Description Retorna o estoque atual de cada chapéu
+// @Tags estoque
+// @Produce json
+// @Success 200 {array} Hat
+// @Router /estoque [get]
+func ListarEstoque(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	type EstoqueHat struct {
+		ID         int    `json:"id"`
+		Nome       string `json:"nome"`
+		Quantidade int    `json:"quantidade"`
+	}
+	estoque := make([]EstoqueHat, len(hats))
+	for i, h := range hats {
+		estoque[i] = EstoqueHat{
+			ID:         h.ID,
+			Nome:       h.Nome,
+			Quantidade: h.Quantidade,
+		}
+	}
+	json.NewEncoder(w).Encode(estoque)
+}
+
 // Estrutura do chapéu (mantida)
 type Hat struct {
-	ID    int     `json:"id"`
-	Nome  string  `json:"nome"`
-	Price float64 `json:"price"`
+	ID         int     `json:"id"`
+	Nome       string  `json:"nome"`
+	Price      float64 `json:"price"`
+	Quantidade int     `json:"quantidade"`
 }
 
 // Estrutura do pedido
@@ -36,21 +63,21 @@ type HatPedido struct {
 
 // Variável global para armazenar chapéus (mantida)
 var hats = []Hat{
-	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00},
-	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00},
-	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90},
-	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90},
-	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90},
-	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90},
-	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90},
-	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90},
-	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90},
-	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90},
-	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90},
-	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90},
-	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90},
-	{ID: 14, Nome: "Chapéu de Pescador", Price: 29.90},
-	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00},
+	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 10},
+	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00, Quantidade: 8},
+	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90, Quantidade: 15},
+	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90, Quantidade: 5},
+	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90, Quantidade: 12},
+	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90, Quantidade: 7},
+	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90, Quantidade: 20},
+	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90, Quantidade: 6},
+	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90, Quantidade: 9},
+	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90, Quantidade: 14},
+	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90, Quantidade: 11},
+	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90, Quantidade: 13},
+	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90, Quantidade: 4},
+	{ID: 14, Nome: "Chapéu de Pescador", Price: 29.90, Quantidade: 16},
+	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00, Quantidade: 10},
 }
 
 // Variável global para armazenar pedidos
@@ -71,6 +98,25 @@ func GetHats(w http.ResponseWriter, r *http.Request) {
 	// Permitir requisições do frontend (CORS)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	// Adiciona flag de estoque antes de retornar
+	type HatComEstoque struct {
+		ID         int     `json:"id"`
+		Nome       string  `json:"nome"`
+		Price      float64 `json:"price"`
+		Quantidade int     `json:"quantidade"`
+		TemEstoque bool    `json:"temEstoque"`
+	}
+	hatsComEstoque := make([]HatComEstoque, len(hats))
+	for i, h := range hats {
+		hatsComEstoque[i] = HatComEstoque{
+			ID:         h.ID,
+			Nome:       h.Nome,
+			Price:      h.Price,
+			Quantidade: h.Quantidade,
+			TemEstoque: h.Quantidade > 0,
+		}
+	}
+	json.NewEncoder(w).Encode(hatsComEstoque)
 
 	json.NewEncoder(w).Encode(hats)
 }

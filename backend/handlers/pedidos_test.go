@@ -37,6 +37,30 @@ func TestCriarPedido_Sucesso(t *testing.T) {
 	}
 }
 
+func TestCriarPedido_SemEstoque(t *testing.T) {
+	// Zera o estoque do chapéu 1
+	for i := range hats {
+		if hats[i].ID == 1 {
+			hats[i].Quantidade = 0
+		}
+	}
+	pedido := pedidoValido()
+	jsonBody, _ := json.Marshal(pedido)
+	req := httptest.NewRequest(http.MethodPost, "/pedido", bytes.NewBuffer(jsonBody))
+	w := httptest.NewRecorder()
+	CriarPedido(w, req)
+	resp := w.Result()
+	if resp.StatusCode != http.StatusConflict {
+		t.Errorf("esperado status 409 (sem estoque), recebeu %d", resp.StatusCode)
+	}
+	// Restaura estoque para outros testes
+	for i := range hats {
+		if hats[i].ID == 1 {
+			hats[i].Quantidade = 10
+		}
+	}
+}
+
 func TestCriarPedido_CupomHATOFFPrimeiraVez(t *testing.T) {
 	pedidosFeitos = make(map[string]bool)
 	hatOffUsadoPorCPF = make(map[string]bool)

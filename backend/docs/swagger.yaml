@@ -1,5 +1,16 @@
 basePath: /
 definitions:
+  handlers.Hat:
+    properties:
+      id:
+        type: integer
+      nome:
+        type: string
+      price:
+        type: number
+      quantidade:
+        type: integer
+    type: object
   handlers.HatPedido:
     properties:
       id:
@@ -202,6 +213,21 @@ paths:
       summary: Finaliza o pedido
       tags:
       - checkout
+  /estoque:
+    get:
+      description: Retorna o estoque atual de cada chapéu
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.Hat'
+            type: array
+      summary: Lista o estoque de chapéus
+      tags:
+      - estoque
   /hats:
     get:
       description: Retorna a lista de chapéus disponíveis
