@@ -46,6 +46,16 @@ var hats = []Hat{
 	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90},
 	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90},
 	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90},
+	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90},
+	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90},
+	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90},
+	{ID: 14, Nome: "Chapéu Nordestino", Price: 34.90},
+	{ID: 15, Nome: "Chapéu de Pescador", Price: 29.90},
+	{ID: 16, Nome: "Chapéu de Festa Junina", Price: 19.90},
+	{ID: 17, Nome: "Chapéu de Lavrador", Price: 27.90},
+	{ID: 18, Nome: "Chapéu de Vaqueiro", Price: 89.90},
+	{ID: 19, Nome: "Chapéu de Tropeiro", Price: 69.90},
+	{ID: 20, Nome: "Chapéu Gustavo Carvalho", Price: 60.00},
 }
 
 // Variável global para armazenar pedidos
