@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Trabalho Avaliativo - Hat Store</title>
@@ -15,6 +16,7 @@
             font-family: 'Montserrat', Arial, sans-serif;
             color: #232323;
         }
+
         .doc-container h1 {
             color: #c9a94b;
             font-size: 2rem;
@@ -22,36 +24,45 @@
             font-weight: 700;
             text-align: center;
         }
+
         .doc-section {
             margin-bottom: 2.5rem;
         }
+
         .doc-section h2 {
             color: #c9a94b;
             font-size: 1.25rem;
             margin-bottom: 1rem;
             font-weight: 600;
         }
-        .doc-section ul, .doc-section ol {
+
+        .doc-section ul,
+        .doc-section ol {
             margin-left: 1.5rem;
             margin-bottom: 1rem;
         }
+
         .doc-section li {
             margin-bottom: 0.5rem;
             line-height: 1.6;
         }
+
         .doc-section strong {
             color: #232323;
             font-weight: bold;
         }
+
         .doc-section .sublist {
             margin-left: 2rem;
             margin-bottom: 0.5rem;
         }
+
         .doc-section .consideracoes {
             margin-left: 2rem;
             font-size: 0.98em;
             color: #7a6a3c;
         }
+
         .doc-section .pergunta {
             margin-top: 1.2rem;
             padding: 0.7rem 1rem;
@@ -61,11 +72,13 @@
             color: #232323;
             border-radius: 6px;
         }
+
         .doc-section .resposta {
             margin-top: 0.5rem;
             font-style: italic;
             color: #7a6a3c;
         }
+
         .doc-section a {
             color: #c9a94b;
             text-decoration: underline;
@@ -73,6 +86,7 @@
         }
     </style>
 </head>
+
 <body>
     <header class="main-header">
         <div class="header-content">
@@ -87,85 +101,133 @@
         <section class="doc-section">
             <h2>Considerações Gerais</h2>
             <ul>
-                <li><strong>O trabalho deve ser realizado individualmente.</strong></li>
-                <li>A aplicação a ser testada é a Hat Store (<a href="https://hat-store-training.fly.dev/" target="_blank">hat-store-training.fly.dev</a>).</li>
-                <li>A documentação da aplicação está disponível no rodapé do site (<a href="https://hat-store-training.fly.dev/documentacao.html" target="_blank">hat-store-training.fly.dev/documentacao.html</a>).</li>
-                <li><strong>Não é permitido utilizar inteligência artificial para realizar o trabalho</strong>, apenas para consulta de dúvidas e informações.</li>
-                <li><strong>Não é permitido copiar informações de trabalhos de outros Cresceres.</strong></li>
+                <li><strong>O trabalho deve ser realizado em grupo (conforme separação do discord).</strong></li>
+                <li>A aplicação a ser testada é a Hat Store (<a href="https://hat-store-training.fly.dev/"
+                        target="_blank">hat-store-training.fly.dev</a>).</li>
+                <li>A documentação da aplicação está disponível no rodapé do site (<a
+                        href="https://hat-store-training.fly.dev/documentacao.html"
+                        target="_blank">hat-store-training.fly.dev/documentacao.html</a>).</li>
+                <li><strong>Não é permitido utilizar inteligência artificial para realizar o trabalho</strong>, apenas
+                    para consulta de dúvidas e informações.</li>
+                <li><strong>Não é permitido copiar informações de trabalhos de outros grupos.</strong></li>
                 <li>O Hat Store é uma loja fictícia, portanto nenhuma cobrança ou compra real será efetuada.</li>
-                <li><strong>A entrega do trabalho deve ser feita até 08/09/2025 às 23:59:59 (horário de Brasília).</strong> Entregas após esse prazo serão desconsideradas.</li>
-                <li>Cada Crescer receberá um feedback referente ao trabalho entregue.</li>
+                <li><strong>A entrega do trabalho deve ser feita até 15/09/2025 às 23:59:59 (horário de
+                        Brasília).</strong> Entregas após esse prazo serão desconsideradas.</li>
+                <li>Cada grupo receberá um feedback referente ao trabalho entregue.</li>
             </ul>
         </section>
         <section class="doc-section">
             <h2>Objetivos</h2>
             <ol>
                 <li>
-                    <strong>Escrever os casos de teste dos seguintes fluxos em gherkin:</strong>
+                    <strong>Refinar e estimar as histórias das seguintes novas funcionalidades:</strong>
                     <ul class="sublist">
-                        <li>Listagem e pesquisa de chapéus.</li>
-                        <li>Fluxo de compra de chapéus.</li>
-                        <li>Funcionalidade de cupom de desconto.</li>
-                        <li>Funcionalidade de consulta de pedidos.</li>
+                        <li>Controle de estoque</li>
+                        <li>Filtro de produtos por categoria e faixa de preço</li>
                     </ul>
                     <div class="consideracoes">
                         <strong>Considerações:</strong>
                         <ul>
-                            <li>Não é necessário incluir o fluxo de login.</li>
-                            <li>Os casos de teste devem ser registrados no Test Plan.</li>
-                            <li>Em cada caso de teste deve ser indicado o <strong>Nível de Teste</strong> (Aceitação, Sistema, Integração ou Unitário).</li>
-                            <li>Em cada caso de teste deve ser indicada a <strong>Técnica de Teste</strong> utilizada, conforme a lista abaixo:</li>
-                            <ul>
-                                <li>Técnicas de caixa-preta: Particionamento de Equivalência (EP), Análise de Valor Limite (BVA), Tabela de Decisão, Transição de Estados, Pairwise Testing (Combinatorial).</li>
-                                <li>Técnicas baseadas na experiência: Testes Exploratórios, Testes Baseados em Erro, Checklists/Definições de Comportamento.</li>
-                            </ul>
-                            <li>Lembre-se de pensar bem e contemplar todos os casos possíveis que <strong>forem pertinentes</strong>, considerando fluxos felizes e negativos.</li>
+                            <li>O refinamento e as estimativas serão feitas em aula em dinâmica</li>
                         </ul>
                     </div>
                 </li>
                 <li>
-                    <strong>Executar os casos de teste que foram escritos.</strong>
+                    <strong>Escrever os casos de teste das novas funcionalidades que foram refinadas</strong>
                     <div class="consideracoes">
                         <strong>Considerações:</strong>
                         <ul>
-                            <li>Cada caso de teste deve ser executado pelo runner do Test Plan.</li>
-                            <li>Cada caso de teste deve ter pelo menos uma evidência comprovando que foi executado com sucesso.</li>
-                            <li>A evidência pode ser um print da tela, um vídeo, um gif ou qualquer outro tipo de registro que for suficiente para comprovar o sucesso do teste.</li>
-                            <li>Os casos de teste que falharem devem ser registrados com status de falha.</li>
+                            <li>Os casos de teste devem ser registrados no Test Plan e escritos em Gherkin.</li>
+                            <li>Em cada caso de teste deve ser indicado o <strong>Nível de Teste</strong> (Aceitação,
+                                Sistema, Integração ou Unitário).</li>
+                            <li>Lembre-se de pensar bem e contemplar todos os casos possíveis que <strong>forem
+                                    pertinentes</strong>, considerando fluxos felizes e negativos.</li>
+                            <li>Dessa vez os casos de teste serão escritos tendo como base somente as histórias,
+                                exercitando assim a prática de planejar os testes antes da codificação ser finalizada
+                            </li>
+                            <li><strong>O prazo para finalizar essa etapa é 12/09/2025 às 13:29:59 (horário de
+                                    Brasília)</strong></li>
                         </ul>
                     </div>
                 </li>
                 <li>
-                    <strong>Registrar os defeitos encontrados durante os testes.</strong>
+                    <strong>Revisão de código backend</strong>
                     <div class="consideracoes">
                         <strong>Considerações:</strong>
                         <ul>
-                            <li>Os defeitos devem ser registrados no board do Azure (<a href="https://dev.azure.com/cwi-formacao/CWI%20Crescer/_sprints/taskboard/CWI%20Crescer%20Team/CWI%20Crescer/Iteration%201" target="_blank">dev.azure.com/cwi-formacao</a>) na user story do seu nome.</li>
-                            <li>Os defeitos devem seguir o padrão apresentado em aula.</li>
+                            <li>Durante a manhã de sexta-feira (12/09/2025), será disponibilizado o pull request com o
+                                código do backend para revisão.</li>
+                            <li>Cada grupo deve revisar o código e sugerir melhorias e correções no privado (discord ou
+                                teams) para o instrutor Gabriel Cartelli.</li>
+                            <li><strong>O prazo para finalizar essa etapa é 12/09/2025 às 13:29:59 (horário de
+                                    Brasília)</strong></li>
                         </ul>
                     </div>
                 </li>
                 <li>
-                    <strong>Considerando que esses testes foram feitos para avaliar o desenvolvimento de novas funcionalidades no site Hat Store, responda à seguinte pergunta:</strong>
-                    <div class="pergunta">
-                        Esse pacote de alterações do Hat Store com novas funcionalidades pode ser publicado no ambiente produtivo? Justifique sua resposta.
-                    </div>
+                    <strong>Executar os casos de teste que foram escritos (parte 1).</strong>
                     <div class="consideracoes">
                         <strong>Considerações:</strong>
                         <ul>
-                            <li>A resposta dessa pergunta deve ser entregue no <a href="https://git.cwi.com.br/formacoes/cwi-crescer/edicao-27/qa" target="_blank">GitLab</a>.</li>
+                            <li>No fim da aula de sexta-feira (12/09/2025), será feito o deploy do backend e os testes
+                                devem ser iniciados.</li>
+                            <li>O frontend só será disponibilizado na segunda-feira (15/09/2025), então o tempo para
+                                executar os testes tendo o front será curto, por isso cada grupo deve montar uma
+                                estratégia de execução dos testes para validar o máximo possível das funcionalidades
+                                diretamente pela API.</li>
+                            <li>Nessa etapa problemas encontrados já devem ser reportados no Azure.</li>
+                            <li>Lembre-se de registrar evidências durante a execução dos testes.</li>
                         </ul>
                     </div>
                 </li>
                 <li>
-                    <strong>Os analistas de negócio do Hat Store solicitaram o aumento do desconto do cupom. Agora ele deve dar 20% de desconto na primeira compra e o código dele deve ser HATOFF.</strong>
+                    <strong>Revisão de código frontend</strong>
                     <div class="consideracoes">
                         <strong>Considerações:</strong>
                         <ul>
-                            <li>Os desenvolvedores já fizeram as alterações necessárias. Eles também corrigiram o problema que existia e permitia o usuário usar o cupom mais de uma vez.</li>
-                            <li>Atualize os casos de teste que forem pertinentes.</li>
-                            <li>Execute novamente os casos de teste que forem pertinentes (não esqueça das evidências).</li>
-                            <li>Reconsidere a pergunta do item 4.</li>
+                            <li>Durante a tarde de sexta-feira (12/09/2025), será disponibilizado o pull request com o
+                                código do frontend para revisão.</li>
+                            <li>Cada grupo deve revisar o código e sugerir melhorias e correções no privado (discord ou
+                                teams) para o instrutor Gabriel Cartelli.</li>
+                            <li>O prazo para finalizar essa etapa é 15/09/2025 às 08:30:00 (horário de Brasília)</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Executar os casos de teste que foram escritos (parte 2).</strong>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>No início da manhã de segunda-feira (15/09/2025), será feito o deploy do frontend e os
+                                testes devem agora ser finalizados considerando também o frontend.</li>
+                            <li>Os defeitos encontrados devem ser registrados no Azure.</li>
+                            <li>Lembre-se de registrar evidências durante a execução dos testes.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Relatório com parecer e métricas</strong>
+                    <ul class="sublist">
+                        <li>No relatório deve estar incluso a resposta da pergunta: <div class="pergunta">
+                                Esse pacote de alterações do Hat Store com novas funcionalidades pode ser publicado no
+                                ambiente produtivo? Justifique sua resposta.
+                            </div>
+                        </li>
+                        <li>Também deve incluir métricas que forem pertinentes conforme aula ministrada na sexta-feira
+                            (12/09/2025)</li>
+                    </ul>
+                    <div class="consideracoes">
+                        <strong>Considerações:</strong>
+                        <ul>
+                            <li>Este relatório deve ser entregue no formato de PDF no seguinte repositório: <a
+                                    href="https://git.cwi.com.br/formacoes/cwi-crescer/edicao-27/qa"
+                                    target="_blank">GitLab</a>.</li>
+                            <li>Somente uma pessoa do grupo precisa fazer o upload do relatório.</li>
+                            <li>Lembre-se de identificar o relatório com o número do grupo e montar um documento
+                                minimamente estruturado pensando que analistas de negócio e outras pessoas de interesse
+                                irão lê-lo.</li>
+                            <li><strong>O prazo limite para entregar o trabalho de forma completa com essa última etapa
+                                    é 15/09/2025 às 23:59:00 (horário de Brasília)</strong></li>
                         </ul>
                     </div>
                 </li>
@@ -173,4 +235,5 @@
         </section>
     </main>
 </body>
+
 </html>
