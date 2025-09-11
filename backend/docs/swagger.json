@@ -307,6 +307,10 @@
         "handlers.Hat": {
             "type": "object",
             "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -370,6 +374,10 @@
         "models.Hat": {
             "type": "object",
             "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },

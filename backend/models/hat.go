@@ -5,5 +5,5 @@ type Hat struct {
 	Nome       string  `json:"nome"`
 	Price      float64 `json:"price"`
 	Quantidade int     `json:"quantidade"`
-	// ...outros campos...
+	Categoria  string  `json:"categoria"` // nacional, importado, crescer
 }

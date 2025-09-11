@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 )
+
+// parseFloat faz o parse seguro de string para float64
 
 // ListarEstoque godoc
 // @Summary Lista o estoque de chapéus
@@ -40,6 +43,7 @@ type Hat struct {
 	Nome       string  `json:"nome"`
 	Price      float64 `json:"price"`
 	Quantidade int     `json:"quantidade"`
+	Categoria  string  `json:"categoria"` // nacional, importado, crescer
 }
 
 // Estrutura do pedido
@@ -63,21 +67,21 @@ type HatPedido struct {
 
 // Variável global para armazenar chapéus (mantida)
 var hats = []Hat{
-	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 10},
-	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00, Quantidade: 8},
-	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90, Quantidade: 15},
-	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90, Quantidade: 5},
-	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90, Quantidade: 12},
-	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90, Quantidade: 7},
-	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90, Quantidade: 20},
-	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90, Quantidade: 6},
-	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90, Quantidade: 9},
-	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90, Quantidade: 14},
-	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90, Quantidade: 11},
-	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90, Quantidade: 13},
-	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90, Quantidade: 4},
-	{ID: 14, Nome: "Chapéu de Pescador", Price: 29.90, Quantidade: 16},
-	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00, Quantidade: 10},
+	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 10, Categoria: "importado"},
+	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00, Quantidade: 8, Categoria: "importado"},
+	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90, Quantidade: 15, Categoria: "importado"},
+	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90, Quantidade: 5, Categoria: "importado"},
+	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90, Quantidade: 12, Categoria: "importado"},
+	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90, Quantidade: 7, Categoria: "importado"},
+	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90, Quantidade: 20, Categoria: "importado"},
+	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90, Quantidade: 6, Categoria: "importado"},
+	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90, Quantidade: 9, Categoria: "importado"},
+	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90, Quantidade: 14, Categoria: "nacional"},
+	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90, Quantidade: 11, Categoria: "nacional"},
+	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90, Quantidade: 13, Categoria: "nacional"},
+	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90, Quantidade: 4, Categoria: "nacional"},
+	{ID: 14, Nome: "Chapéu de Pescador", Price: 29.90, Quantidade: 16, Categoria: "nacional"},
+	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00, Quantidade: 10, Categoria: "crescer"},
 }
 
 // Variável global para armazenar pedidos
@@ -105,20 +109,69 @@ func GetHats(w http.ResponseWriter, r *http.Request) {
 		Price      float64 `json:"price"`
 		Quantidade int     `json:"quantidade"`
 		TemEstoque bool    `json:"temEstoque"`
+		Categoria  string  `json:"categoria"`
 	}
-	hatsComEstoque := make([]HatComEstoque, len(hats))
-	for i, h := range hats {
-		hatsComEstoque[i] = HatComEstoque{
+	// Filtro por categoria via query param: ?categoria=nacional,importado,crescer
+	categorias := r.URL.Query().Get("categoria")
+	var filtro []string
+	if categorias != "" {
+		filtro = strings.Split(categorias, ",")
+	}
+	// Filtro por faixa de valor
+	minStr := r.URL.Query().Get("min")
+	maxStr := r.URL.Query().Get("max")
+	var min, max float64
+	var errMin, errMax error
+	if minStr != "" {
+		min, errMin = parseFloat(minStr)
+	}
+	if maxStr != "" {
+		max, errMax = parseFloat(maxStr)
+	}
+	hatsComEstoque := make([]HatComEstoque, 0)
+	for _, h := range hats {
+		// Filtro de categoria
+		if len(filtro) > 0 && !containsCategoria(filtro, h.Categoria) {
+			continue
+		}
+		// Filtro de valor mínimo
+		if minStr != "" && errMin == nil && h.Price < min {
+			continue
+		}
+		// Filtro de valor máximo
+		if maxStr != "" && errMax == nil && h.Price > max {
+			continue
+		}
+		hatsComEstoque = append(hatsComEstoque, HatComEstoque{
 			ID:         h.ID,
 			Nome:       h.Nome,
 			Price:      h.Price,
 			Quantidade: h.Quantidade,
 			TemEstoque: h.Quantidade > 0,
-		}
+			Categoria:  h.Categoria,
+		})
 	}
 	json.NewEncoder(w).Encode(hatsComEstoque)
+}
 
-	json.NewEncoder(w).Encode(hats)
+// parseFloat faz o parse seguro de string para float64
+func parseFloat(s string) (float64, error) {
+	return stringsToFloat(s)
+}
+
+// stringsToFloat converte string para float64 usando padrão brasileiro e internacional
+func stringsToFloat(s string) (float64, error) {
+	s = strings.ReplaceAll(s, ",", ".")
+	return strconv.ParseFloat(s, 64)
+}
+
+func containsCategoria(filtros []string, categoria string) bool {
+	for _, f := range filtros {
+		if strings.ToLower(strings.TrimSpace(f)) == categoria {
+			return true
+		}
+	}
+	return false
 }
 
 // AddToCart godoc
@@ -190,6 +243,23 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Verifica estoque antes de calcular o total
+	for _, item := range pedido.Itens {
+		encontrado := false
+		for i := range hats {
+			if hats[i].ID == item.ID {
+				encontrado = true
+				if hats[i].Quantidade < item.Quantidade {
+					http.Error(w, "Sem estoque suficiente para o chapéu: "+hats[i].Nome, http.StatusConflict)
+					return
+				}
+			}
+		}
+		if !encontrado {
+			http.Error(w, "Chapéu não encontrado: "+item.Nome, http.StatusBadRequest)
+			return
+		}
+	}
 	// Calcular o total do pedido
 	total := 0.0
 	for _, item := range pedido.Itens {

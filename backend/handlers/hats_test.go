@@ -22,6 +22,7 @@ func TestGetHats(t *testing.T) {
 		Price      float64 `json:"price"`
 		Quantidade int     `json:"quantidade"`
 		TemEstoque bool    `json:"temEstoque"`
+		Categoria  string  `json:"categoria"`
 	}
 	var result []HatComEstoque
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -36,6 +37,91 @@ func TestGetHats(t *testing.T) {
 		}
 		if hat.Quantidade == 0 && hat.TemEstoque {
 			t.Errorf("chapéu %s não deveria ter estoque, mas temEstoque=true", hat.Nome)
+		}
+		if hat.Categoria == "" {
+			t.Errorf("chapéu %s deveria ter categoria definida", hat.Nome)
+		}
+	}
+	// Testa filtro por categoria nacional
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?categoria=nacional", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultNacional []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultNacional); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	for _, hat := range resultNacional {
+		if hat.Categoria != "nacional" {
+			t.Errorf("esperado apenas chapéus nacionais, recebeu %s", hat.Categoria)
+		}
+	}
+	// Testa filtro múltiplo
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?categoria=nacional,importado", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultMulti []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultMulti); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	for _, hat := range resultMulti {
+		if hat.Categoria != "nacional" && hat.Categoria != "importado" {
+			t.Errorf("esperado apenas chapéus nacionais ou importados, recebeu %s", hat.Categoria)
+		}
+	}
+	// Testa filtro inexistente
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?categoria=inexistente", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultInexistente []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultInexistente); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	if len(resultInexistente) != 0 {
+		t.Errorf("esperado lista vazia para categoria inexistente, recebeu %d chapéus", len(resultInexistente))
+	}
+	// Testa filtro por valor mínimo
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?min=100", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultMin []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultMin); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	for _, hat := range resultMin {
+		if hat.Price < 100 {
+			t.Errorf("esperado apenas chapéus com preço >= 100, recebeu %.2f", hat.Price)
+		}
+	}
+	// Testa filtro por valor máximo
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?max=50", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultMax []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultMax); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	for _, hat := range resultMax {
+		if hat.Price > 50 {
+			t.Errorf("esperado apenas chapéus com preço <= 50, recebeu %.2f", hat.Price)
+		}
+	}
+	// Testa filtro por valor mínimo e máximo
+	w = httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/hats?min=50&max=100", nil)
+	GetHats(w, req)
+	resp = w.Result()
+	var resultFaixa []HatComEstoque
+	if err := json.NewDecoder(resp.Body).Decode(&resultFaixa); err != nil {
+		t.Errorf("erro ao decodificar resposta: %v", err)
+	}
+	for _, hat := range resultFaixa {
+		if hat.Price < 50 || hat.Price > 100 {
+			t.Errorf("esperado apenas chapéus com preço entre 50 e 100, recebeu %.2f", hat.Price)
 		}
 	}
 }

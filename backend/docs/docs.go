@@ -313,6 +313,10 @@ const docTemplate = `{
         "handlers.Hat": {
             "type": "object",
             "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -376,6 +380,10 @@ const docTemplate = `{
         "models.Hat": {
             "type": "object",
             "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
