@@ -24,4 +24,16 @@ if ! echo "$FRONTEND_TEST_RESULT" | grep '"success":true' > /dev/null; then
 fi
 
 # Se todos passaram, faz deploy
-fly deploy
+ENV=$1
+
+if [ "$ENV" = "dev" ]; then
+  fly deploy --config fly.dev.toml
+elif [ "$ENV" = "prod" ]; then
+  fly deploy --config fly.toml
+elif [ "$ENV" = "all" ]; then
+  fly deploy --config fly.dev.toml
+  fly deploy --config fly.toml
+else
+  echo "Informe 'dev', 'prod' ou 'all' como parâmetro."
+  exit 1
+fi

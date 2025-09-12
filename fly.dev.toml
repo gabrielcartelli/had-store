@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for hatstore-prd on 2025-09-12T10:11:52-03:00
+# fly.toml app configuration file generated for hatstore-dev on 2025-09-12T10:10:10-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'hatstore-prd'
+app = 'hatstore-dev'
 primary_region = 'gru'
 kill_signal = 'SIGINT'
 kill_timeout = '5s'
@@ -11,15 +11,14 @@ kill_timeout = '5s'
 [build]
 
 [env]
-  DEBUG = 'false'
-  ENVIRONMENT = 'production'
+  DEBUG = 'true'
+  ENVIRONMENT = 'development'
 
 [http_service]
   internal_port = 8080
-  force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
   processes = ['app']
 
 [[services]]

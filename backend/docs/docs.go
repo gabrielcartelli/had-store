@@ -225,6 +225,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/estoque": {
+            "get": {
+                "description": "Retorna o estoque atual de cada chapéu",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "estoque"
+                ],
+                "summary": "Lista o estoque de chapéus",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.Hat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/hats": {
             "get": {
                 "description": "Retorna a lista de chapéus disponíveis",
@@ -287,6 +310,27 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.Hat": {
+            "type": "object",
+            "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantidade": {
+                    "type": "integer"
+                }
+            }
+        },
         "handlers.HatPedido": {
             "type": "object",
             "properties": {
@@ -336,6 +380,10 @@ const docTemplate = `{
         "models.Hat": {
             "type": "object",
             "properties": {
+                "categoria": {
+                    "description": "nacional, importado, crescer",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -381,8 +429,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "hat-store-training.fly.dev",
-	BasePath:         "/",
+	Host:             "hatstore-prd.fly.dev",
+	BasePath:         "/api/",
 	Schemes:          []string{},
 	Title:            "Hat Store API",
 	Description:      "API da loja de chapéus Hat Store.",

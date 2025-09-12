@@ -12,8 +12,8 @@ import (
 // @title Hat Store API
 // @version 1.0
 // @description API da loja de chapéus Hat Store.
-// @host localhost:8080
-// @BasePath /
+// @host hatstore-prd.fly.dev
+// @BasePath /api/
 
 // AVISO: Mudei o @BasePath para / porque o gorilla/mux agora controla a raiz.
 

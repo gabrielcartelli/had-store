@@ -1,9 +1,10 @@
 
+
 /**
  * @jest-environment jsdom
  */
 
-require('./auth.js');
+import './auth.js';
 
 describe('auth.js', () => {
   let loginForm, registerForm, showRegisterButton, showLoginButton, loginMessageEl, registerMessageEl;

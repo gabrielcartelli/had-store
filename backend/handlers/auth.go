@@ -5,6 +5,7 @@ import (
 	"hat-store-training/backend/models"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -44,6 +45,14 @@ var attemptsMutex sync.Mutex
 // @Failure 409 {string} string "Usuário já existe"
 // @Router /auth/register [post]
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	if os.Getenv("ENVIRONMENT") == "development" {
+		uuid := r.Header.Get("X-Dev-UUID")
+		expected := os.Getenv("DEV_UUID")
+		if uuid == "" || uuid != expected {
+			http.Error(w, "Acesso não autorizado: forneça o UUID", http.StatusUnauthorized)
+			return
+		}
+	}
 	var creds models.RegisterRequest
 
 	// 1. Pega o email e a senha que o usuário enviou
@@ -100,6 +109,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // @Failure 429 {string} string "Muitas tentativas de login"
 // @Router /auth/login [post]
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	if os.Getenv("ENVIRONMENT") == "development" {
+		uuid := r.Header.Get("X-Dev-UUID")
+		expected := os.Getenv("DEV_UUID")
+		if uuid == "" || uuid != expected {
+			http.Error(w, "Acesso não autorizado: forneça o UUID", http.StatusUnauthorized)
+			return
+		}
+	}
 	var creds models.LoginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {

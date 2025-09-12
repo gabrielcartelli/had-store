@@ -1,3 +1,18 @@
+
+import { fetchApi } from './api.js';
+
+// Prompt do UUID também em auth.html
+const isDev = window.DEV_ENV === true;
+const isTest = typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID;
+if (isDev && !isTest) {
+    if (!localStorage.getItem('dev_uuid')) {
+        const uuid = prompt('Digite o token de acesso ao ambiente de desenvolvimento:');
+        if (uuid) {
+            localStorage.setItem('dev_uuid', uuid);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Seleciona os elementos do DOM
     const loginForm = document.getElementById('login-form');
@@ -35,26 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('register-password').value;
 
         try {
-            const response = await fetch('/auth/register', {
+            await fetchApi('/auth/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
 
-            if (response.ok) {
-                showMessage(registerMessageEl, 'Registro bem-sucedido! Você já pode fazer o login.', false);
-                // Opcional: alternar para o formulário de login após sucesso
-                setTimeout(() => {
-                    toggleForms();
-                    document.getElementById('login-email').value = email; // Preenche o email para facilitar
-                    document.getElementById('login-password').focus();
-                }, 2000);
-            } else {
-                const errorData = await response.text();
-                showMessage(registerMessageEl, `Erro no registro: ${errorData}`);
-            }
+            showMessage(registerMessageEl, 'Registro bem-sucedido! Você já pode fazer o login.', false);
+            // Opcional: alternar para o formulário de login após sucesso
+            setTimeout(() => {
+                toggleForms();
+                document.getElementById('login-email').value = email; // Preenche o email para facilitar
+                document.getElementById('login-password').focus();
+            }, 2000);
         } catch (error) {
-            showMessage(registerMessageEl, 'Erro de conexão. Tente novamente.');
+            showMessage(registerMessageEl, `Erro no registro: ${error.message}`);
         }
     });
 
@@ -67,32 +76,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const rememberMe = document.getElementById('remember-me').checked;
 
         try {
-            const response = await fetch('/auth/login', {
+            const data = await fetchApi('/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, rememberMe }),
             });
 
-            const data = await response.json();
+            // 'Salva o token e o email
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user_email', email);
 
-            if (response.ok) {
-                // 'Salva o token e o email
-                localStorage.setItem('jwt_token', data.token);
-                localStorage.setItem('user_email', email);
+            showMessage(loginMessageEl, 'Login bem-sucedido! Redirecionando...', false);
 
-                showMessage(loginMessageEl, 'Login bem-sucedido! Redirecionando...', false);
+            // Redireciona para a página principal após um breve momento
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
 
-                // Redireciona para a página principal após um breve momento
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
-
-            } else {
-                // Erro de login (senha errada, bloqueado, etc.)
-                showMessage(loginMessageEl, data.error || 'Email ou senha inválidos.');
-            }
         } catch (error) {
-            showMessage(loginMessageEl, 'Erro de conexão ou dados inválidos. Tente novamente.');
+            showMessage(loginMessageEl, `Erro no login: ${error.message || 'Credenciais inválidas.'}`);
         }
     });
 });

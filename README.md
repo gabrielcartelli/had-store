@@ -44,7 +44,7 @@ Este repositório contém o projeto **Hat Store**, uma loja fictícia de chapéu
 
 - O deploy do projeto é realizado na plataforma [Fly.io](https://fly.io/).
 - O site está disponível em produção em:  
-  [https://hat-store-training.fly.dev/](https://hat-store-training.fly.dev/)
+  [https://hatstore-prd.fly.dev/](https://hatstore-prd.fly.dev/)
 
 ## Releases
 
@@ -62,7 +62,7 @@ Este repositório contém o projeto **Hat Store**, uma loja fictícia de chapéu
 
 ## Links Úteis
 
-- [Documentação de negócio](https://hat-store-training.fly.dev/documentacao.html)
+- [Documentação de negócio](https://hatstore-prd.fly.dev/documentacao.html)
 - [Trabalho avaliativo](trabalho-avaliativo.html)
 - [Site da CWI](https://cwi.com.br/)
 - [GitLab QA](https://git.cwi.com.br/formacoes/cwi-crescer/edicao-27/qa)
