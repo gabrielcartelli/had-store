@@ -67,21 +67,21 @@ type HatPedido struct {
 
 // Variável global para armazenar chapéus (mantida)
 var hats = []Hat{
-	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 10, Categoria: "importado"},
-	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00, Quantidade: 8, Categoria: "importado"},
-	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90, Quantidade: 15, Categoria: "importado"},
+	{ID: 1, Nome: "Chapéu Panamá", Price: 120.00, Quantidade: 100, Categoria: "importado"},
+	{ID: 2, Nome: "Chapéu Fedora", Price: 150.00, Quantidade: 80, Categoria: "importado"},
+	{ID: 3, Nome: "Chapéu Bucket", Price: 49.90, Quantidade: 150, Categoria: "importado"},
 	{ID: 4, Nome: "Chapéu Cowboy", Price: 109.90, Quantidade: 5, Categoria: "importado"},
-	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90, Quantidade: 12, Categoria: "importado"},
+	{ID: 5, Nome: "Chapéu Floppy", Price: 79.90, Quantidade: 120, Categoria: "importado"},
 	{ID: 6, Nome: "Chapéu Bowler", Price: 69.90, Quantidade: 7, Categoria: "importado"},
 	{ID: 7, Nome: "Chapéu Beanie", Price: 39.90, Quantidade: 20, Categoria: "importado"},
-	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90, Quantidade: 6, Categoria: "importado"},
+	{ID: 8, Nome: "Chapéu Pork Pie", Price: 59.90, Quantidade: 0, Categoria: "importado"},
 	{ID: 9, Nome: "Chapéu Trilby", Price: 84.90, Quantidade: 9, Categoria: "importado"},
-	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90, Quantidade: 14, Categoria: "nacional"},
-	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90, Quantidade: 11, Categoria: "nacional"},
-	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90, Quantidade: 13, Categoria: "nacional"},
-	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90, Quantidade: 4, Categoria: "nacional"},
+	{ID: 10, Nome: "Chapéu Snapback", Price: 44.90, Quantidade: 0, Categoria: "nacional"},
+	{ID: 11, Nome: "Chapéu Sertanejo", Price: 99.90, Quantidade: 110, Categoria: "nacional"},
+	{ID: 12, Nome: "Chapéu Gaúcho", Price: 129.90, Quantidade: 130, Categoria: "nacional"},
+	{ID: 13, Nome: "Chapéu Cangaceiro", Price: 139.90, Quantidade: 40, Categoria: "nacional"},
 	{ID: 14, Nome: "Chapéu de Pescador", Price: 29.90, Quantidade: 16, Categoria: "nacional"},
-	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00, Quantidade: 10, Categoria: "crescer"},
+	{ID: 15, Nome: "Chapéu Gustavo Carvalho", Price: 60.00, Quantidade: 1000, Categoria: "crescer"},
 }
 
 // Variável global para armazenar pedidos
