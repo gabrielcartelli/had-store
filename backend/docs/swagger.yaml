@@ -1,5 +1,10 @@
 basePath: /api/
 definitions:
+  handlers.EstoquePayload:
+    properties:
+      quantidade:
+        type: integer
+    type: object
   handlers.Hat:
     properties:
       categoria:
@@ -313,6 +318,41 @@ paths:
               $ref: '#/definitions/models.Hat'
             type: array
       summary: Lista todos os chapéus
+      tags:
+      - hats
+  /hats/{id}/estoque:
+    patch:
+      consumes:
+      - application/json
+      description: Atualiza a quantidade de estoque de um chapéu pelo ID
+      parameters:
+      - description: ID do chapéu
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nova quantidade de estoque (0 a 200)
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.EstoquePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Hat'
+        "400":
+          description: Quantidade inválida ou erro de requisição
+          schema:
+            type: string
+        "404":
+          description: Chapéu não encontrado
+          schema:
+            type: string
+      summary: Edita o estoque de um chapéu
       tags:
       - hats
   /pedido:

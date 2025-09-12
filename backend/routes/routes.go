@@ -74,6 +74,7 @@ func InitializeRoutes() *mux.Router {
 	apiPublic := router.PathPrefix("/api").Subrouter()
 	apiPublic.HandleFunc("/hats", handlers.GetHats).Methods("GET")
 	apiPublic.HandleFunc("/estoque", handlers.ListarEstoque).Methods("GET")
+	apiPublic.HandleFunc("/hats/{id}/estoque", handlers.EditarEstoqueHat).Methods("PATCH")
 
 	// 4. Sub-roteador para rotas da API protegidas
 	apiProtected := router.PathPrefix("/api").Subrouter()

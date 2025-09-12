@@ -317,6 +317,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/hats/{id}/estoque": {
+            "patch": {
+                "description": "Atualiza a quantidade de estoque de um chapéu pelo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hats"
+                ],
+                "summary": "Edita o estoque de um chapéu",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do chapéu",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nova quantidade de estoque (0 a 200)",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.EstoquePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.Hat"
+                        }
+                    },
+                    "400": {
+                        "description": "Quantidade inválida ou erro de requisição",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Chapéu não encontrado",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/pedido": {
             "post": {
                 "description": "Registra os dados do pedido em memória",
@@ -383,6 +436,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.EstoquePayload": {
+            "type": "object",
+            "properties": {
+                "quantidade": {
+                    "type": "integer"
+                }
+            }
+        },
         "handlers.Hat": {
             "type": "object",
             "properties": {
