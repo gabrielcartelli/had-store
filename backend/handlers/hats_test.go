@@ -124,6 +124,22 @@ func TestGetHats(t *testing.T) {
 			t.Errorf("esperado apenas chapéus com preço entre 50 e 100, recebeu %.2f", hat.Price)
 		}
 	}
+	// Verifica se o estoque foi decrementado corretamente
+	estoqueInicial := -1
+	for i := range hats {
+		if hats[i].ID == 1 {
+			estoqueInicial = hats[i].Quantidade + 1 // pois já foi decrementado
+		}
+	}
+	estoqueFinal := -1
+	for i := range hats {
+		if hats[i].ID == 1 {
+			estoqueFinal = hats[i].Quantidade
+		}
+	}
+	if estoqueFinal != estoqueInicial-1 {
+		t.Errorf("estoque do chapéu não foi decrementado corretamente, esperado %d, recebeu %d", estoqueInicial-1, estoqueFinal)
+	}
 }
 func TestRegistrarPedido_SemEstoque(t *testing.T) {
 	// Zera o estoque do chapéu 1

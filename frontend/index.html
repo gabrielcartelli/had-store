@@ -98,7 +98,7 @@
     <!-- CORREÇÃO: Ordem dos scripts é importante -->
     <script src="js/api.js"></script>
     <script>window.DEV_ENV = window.location.hostname === 'hatstore-dev.fly.dev';</script>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
     <footer style="background:#232323;border-top:1px solid #c9a94b;padding:0.7rem 0;">
         <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;">
             <img src="imagens/logo-hatstore.png" alt="Hat Store" class="logo-header" />
@@ -111,6 +111,9 @@
                 </li>
                 <li>
                     <a href="https://cwi.com.br/" target="_blank" style="color:#c9a94b;text-decoration:underline;font-weight:500;font-size:1rem;">CWI</a>
+                </li>
+                <li>
+                    <a href="/swagger/index.html" target="_blank" style="color:#c9a94b;text-decoration:underline;font-weight:500;font-size:1rem;">Swagger API</a>
                 </li>
             </ul>
         </div>

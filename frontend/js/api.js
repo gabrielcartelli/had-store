@@ -11,7 +11,7 @@ if (isDev && !isTest) {
 }
 
 // A função que vamos usar em todos os lugares para fazer chamadas à API
-async function fetchApi(path, options = {}) {
+export async function fetchApi(path, options = {}) {
     // Pega o token de login
     const token = localStorage.getItem('jwt_token');
     const userEmail = localStorage.getItem('user_email');
@@ -47,7 +47,11 @@ async function fetchApi(path, options = {}) {
     // Combina os cabeçalhos padrão com quaisquer outros que a chamada específica precise
     options.headers = { ...defaultHeaders, ...options.headers };
 
-    const response = await fetch(`/api${path}`, options);
+    let url = path;
+    if (!url.startsWith('/auth')) {
+        url = `/api${path}`;
+    }
+    const response = await fetch(url, options);
 
     if (response.status === 401) {
         // Se o token for inválido ou expirado, limpa e redireciona para o login
@@ -70,5 +74,3 @@ async function fetchApi(path, options = {}) {
     }
     return {};
 }
-
-module.exports = { fetchApi };

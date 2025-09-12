@@ -1,3 +1,4 @@
+import { fetchApi } from './api.js';
     // Botão de carrinho no header abre a sidebar do carrinho
     const headerCartBtn = document.getElementById('header-cart-btn');
 // Variáveis globais para os dados da aplicação

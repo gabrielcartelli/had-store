@@ -1,3 +1,14 @@
+// ConsultarPedidos godoc
+// @Summary Consulta pedidos por CPF
+// @Description Retorna o histórico de pedidos do usuário pelo CPF
+// @Tags pedido
+// @Produce json
+// @Param Authorization header string false "JWT token"
+// @Param cpf query string true "CPF do usuário"
+// @Success 200 {array} models.Pedido
+// @Failure 400 {string} string "CPF não informado"
+// @Failure 401 {string} string "Acesso não autorizado"
+// @Router /pedidos [get]
 package handlers
 
 import (
@@ -30,6 +41,20 @@ func CPFUsouHatOff(cpf string) bool {
 	return hatOffUsadoPorCPF[cpf]
 }
 
+// CriarPedido godoc
+// @Summary Registra um pedido
+// @Description Registra os dados do pedido em memória
+// @Tags pedido
+// @Accept json
+// @Produce json
+// @Param X-Dev-UUID header string false "UUID de desenvolvimento"
+// @Param Authorization header string false "JWT token"
+// @Param pedido body models.Pedido true "Dados do pedido"
+// @Success 201 {object} models.Pedido
+// @Failure 400 {string} string "Dados inválidos"
+// @Failure 401 {string} string "Acesso não autorizado"
+// @Failure 409 {string} string "Produto sem estoque suficiente"
+// @Router /pedido [post]
 func CriarPedido(w http.ResponseWriter, r *http.Request) {
 	if os.Getenv("ENVIRONMENT") == "development" {
 		uuid := r.Header.Get("X-Dev-UUID")

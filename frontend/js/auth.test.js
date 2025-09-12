@@ -27,16 +27,15 @@ describe('auth.js', () => {
   });
 
   test('toggleForms alterna visibilidade dos formulários', () => {
-    loginForm.hidden = false;
-    registerForm.hidden = true;
-    // Simula o carregamento do DOM para registrar os event listeners
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
     document.dispatchEvent(new Event('DOMContentLoaded'));
     window.toggleForms();
-    expect(loginForm.hidden).toBe(true);
-    expect(registerForm.hidden).toBe(false);
+    expect(loginForm.style.display).toBe('none');
+    expect(registerForm.style.display).toBe('block');
     window.toggleForms();
-    expect(loginForm.hidden).toBe(false);
-    expect(registerForm.hidden).toBe(true);
+    expect(loginForm.style.display).toBe('block');
+    expect(registerForm.style.display).toBe('none');
   });
 
   test('showMessage exibe mensagem de erro', () => {

@@ -39,6 +39,7 @@ var attemptsMutex sync.Mutex
 // @Tags auth
 // @Accept json
 // @Produce json
+// @Param X-Dev-UUID header string false "UUID de desenvolvimento"
 // @Param credentials body models.RegisterRequest true "Credenciais de Registro"
 // @Success 201 {object} map[string]string "Usuário criado com sucesso!"
 // @Failure 400 {string} string "Requisição inválida"
@@ -102,6 +103,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // @Tags auth
 // @Accept json
 // @Produce json
+// @Param X-Dev-UUID header string false "UUID de desenvolvimento"
 // @Param credentials body models.LoginRequest true "Credenciais de Login"
 // @Success 200 {object} map[string]string "Token JWT"
 // @Failure 400 {string} string "Requisição inválida"

@@ -23,10 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginMessageEl = document.getElementById('login-message');
     const registerMessageEl = document.getElementById('register-message');
 
-    // Função para alternar a visibilidade dos formulários
+    // Função para alternar a visibilidade dos formulários usando display
     const toggleForms = () => {
-        loginForm.hidden = !loginForm.hidden;
-        registerForm.hidden = !registerForm.hidden;
+        if (loginForm.style.display === 'none') {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        } else {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+        }
     };
     window.toggleForms = toggleForms;
 

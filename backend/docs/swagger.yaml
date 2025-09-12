@@ -67,6 +67,42 @@ definitions:
       rememberMe:
         type: boolean
     type: object
+  models.Pedido:
+    properties:
+      bairro:
+        type: string
+      cep:
+        type: string
+      cidade:
+        type: string
+      cpf:
+        type: string
+      cupom:
+        type: string
+      email:
+        type: string
+      endereco:
+        type: string
+      id:
+        type: integer
+      itens:
+        items:
+          $ref: '#/definitions/models.Hat'
+        type: array
+      nome:
+        type: string
+      numero:
+        type: string
+      pagamento:
+        description: '"pix" ou "boleto"'
+        type: string
+      telefone:
+        type: string
+      total:
+        type: number
+      uf:
+        type: string
+    type: object
   models.RegisterRequest:
     properties:
       email:
@@ -87,6 +123,10 @@ paths:
       - application/json
       description: Loga um usuário com email e senha e retorna um token JWT
       parameters:
+      - description: UUID de desenvolvimento
+        in: header
+        name: X-Dev-UUID
+        type: string
       - description: Credenciais de Login
         in: body
         name: credentials
@@ -123,6 +163,10 @@ paths:
       - application/json
       description: Cria uma nova conta de usuário com email e senha
       parameters:
+      - description: UUID de desenvolvimento
+        in: header
+        name: X-Dev-UUID
+        type: string
       - description: Credenciais de Registro
         in: body
         name: credentials
@@ -155,6 +199,10 @@ paths:
       - application/json
       description: Adiciona um chapéu ao carrinho do usuário
       parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        type: string
       - description: Item do carrinho
         in: body
         name: item
@@ -178,6 +226,10 @@ paths:
       - application/json
       description: Atualiza a quantidade de um item no carrinho
       parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        type: string
       - description: Item do carrinho
         in: body
         name: item
@@ -201,6 +253,10 @@ paths:
       - application/json
       description: Finaliza o pedido do usuário
       parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        type: string
       - description: Dados do pedido
         in: body
         name: pedido
@@ -222,6 +278,11 @@ paths:
   /estoque:
     get:
       description: Retorna o estoque atual de cada chapéu
+      parameters:
+      - description: UUID de desenvolvimento
+        in: header
+        name: X-Dev-UUID
+        type: string
       produces:
       - application/json
       responses:
@@ -237,6 +298,11 @@ paths:
   /hats:
     get:
       description: Retorna a lista de chapéus disponíveis
+      parameters:
+      - description: UUID de desenvolvimento
+        in: header
+        name: X-Dev-UUID
+        type: string
       produces:
       - application/json
       responses:
@@ -255,21 +321,39 @@ paths:
       - application/json
       description: Registra os dados do pedido em memória
       parameters:
+      - description: UUID de desenvolvimento
+        in: header
+        name: X-Dev-UUID
+        type: string
+      - description: JWT token
+        in: header
+        name: Authorization
+        type: string
       - description: Dados do pedido
         in: body
         name: pedido
         required: true
         schema:
-          $ref: '#/definitions/handlers.Pedido'
+          $ref: '#/definitions/models.Pedido'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.Pedido'
+        "400":
+          description: Dados inválidos
+          schema:
+            type: string
+        "401":
+          description: Acesso não autorizado
+          schema:
+            type: string
+        "409":
+          description: Produto sem estoque suficiente
+          schema:
+            type: string
       summary: Registra um pedido
       tags:
       - pedido

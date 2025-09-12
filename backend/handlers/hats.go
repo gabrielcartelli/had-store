@@ -24,6 +24,7 @@ func checkDevAuth(r *http.Request) bool {
 // @Description Retorna o estoque atual de cada chapéu
 // @Tags estoque
 // @Produce json
+// @Param X-Dev-UUID header string false "UUID de desenvolvimento"
 // @Success 200 {array} Hat
 // @Router /estoque [get]
 func ListarEstoque(w http.ResponseWriter, r *http.Request) {
@@ -108,6 +109,7 @@ var (
 // @Description Retorna a lista de chapéus disponíveis
 // @Tags hats
 // @Produce json
+// @Param X-Dev-UUID header string false "UUID de desenvolvimento"
 // @Success 200 {array} models.Hat
 // @Router /hats [get]
 func GetHats(w http.ResponseWriter, r *http.Request) {
@@ -197,6 +199,7 @@ func containsCategoria(filtros []string, categoria string) bool {
 // @Tags cart
 // @Accept json
 // @Produce json
+// @Param Authorization header string false "JWT token"
 // @Param item body models.Hat true "Item do carrinho"
 // @Success 200 {object} map[string]interface{}
 // @Router /cart/add [post]
@@ -216,6 +219,7 @@ func AddToCart(w http.ResponseWriter, r *http.Request) {
 // @Tags cart
 // @Accept json
 // @Produce json
+// @Param Authorization header string false "JWT token"
 // @Param item body models.Hat true "Item do carrinho"
 // @Success 200 {object} map[string]interface{}
 // @Router /cart/update [put]
@@ -235,6 +239,7 @@ func UpdateCart(w http.ResponseWriter, r *http.Request) {
 // @Tags checkout
 // @Accept json
 // @Produce json
+// @Param Authorization header string false "JWT token"
 // @Param pedido body map[string]interface{} true "Dados do pedido"
 // @Success 200 {object} map[string]interface{}
 // @Router /checkout [post]
@@ -254,6 +259,7 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 // @Tags pedido
 // @Accept json
 // @Produce json
+// @Param Authorization header string false "JWT token"
 // @Param pedido body Pedido true "Dados do pedido"
 // @Success 200 {object} map[string]string
 // @Router /pedido [post]
@@ -276,7 +282,7 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Verifica estoque antes de calcular o total
+	// Verifica estoque e desconta ao registrar o pedido
 	for _, item := range pedido.Itens {
 		encontrado := false
 		for i := range hats {
@@ -286,6 +292,8 @@ func RegistrarPedido(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, "Sem estoque suficiente para o chapéu: "+hats[i].Nome, http.StatusConflict)
 					return
 				}
+				// Desconta o estoque
+				hats[i].Quantidade -= item.Quantidade
 			}
 		}
 		if !encontrado {

@@ -30,6 +30,12 @@ const docTemplate = `{
                 "summary": "Autentica um usuário",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "UUID de desenvolvimento",
+                        "name": "X-Dev-UUID",
+                        "in": "header"
+                    },
+                    {
                         "description": "Credenciais de Login",
                         "name": "credentials",
                         "in": "body",
@@ -85,6 +91,12 @@ const docTemplate = `{
                 "summary": "Registra um novo usuário",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "UUID de desenvolvimento",
+                        "name": "X-Dev-UUID",
+                        "in": "header"
+                    },
+                    {
                         "description": "Credenciais de Registro",
                         "name": "credentials",
                         "in": "body",
@@ -134,6 +146,12 @@ const docTemplate = `{
                 "summary": "Adiciona um chapéu ao carrinho",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
                         "description": "Item do carrinho",
                         "name": "item",
                         "in": "body",
@@ -168,6 +186,12 @@ const docTemplate = `{
                 ],
                 "summary": "Atualiza o carrinho",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
                     {
                         "description": "Item do carrinho",
                         "name": "item",
@@ -204,6 +228,12 @@ const docTemplate = `{
                 "summary": "Finaliza o pedido",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
                         "description": "Dados do pedido",
                         "name": "pedido",
                         "in": "body",
@@ -235,6 +265,14 @@ const docTemplate = `{
                     "estoque"
                 ],
                 "summary": "Lista o estoque de chapéus",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID de desenvolvimento",
+                        "name": "X-Dev-UUID",
+                        "in": "header"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -258,6 +296,14 @@ const docTemplate = `{
                     "hats"
                 ],
                 "summary": "Lista todos os chapéus",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID de desenvolvimento",
+                        "name": "X-Dev-UUID",
+                        "in": "header"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -286,23 +332,50 @@ const docTemplate = `{
                 "summary": "Registra um pedido",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "UUID de desenvolvimento",
+                        "name": "X-Dev-UUID",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
                         "description": "Dados do pedido",
                         "name": "pedido",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.Pedido"
+                            "$ref": "#/definitions/models.Pedido"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.Pedido"
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Acesso não autorizado",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Produto sem estoque suficiente",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -409,6 +482,60 @@ const docTemplate = `{
                 },
                 "rememberMe": {
                     "type": "boolean"
+                }
+            }
+        },
+        "models.Pedido": {
+            "type": "object",
+            "properties": {
+                "bairro": {
+                    "type": "string"
+                },
+                "cep": {
+                    "type": "string"
+                },
+                "cidade": {
+                    "type": "string"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "cupom": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "endereco": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "itens": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Hat"
+                    }
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "pagamento": {
+                    "description": "\"pix\" ou \"boleto\"",
+                    "type": "string"
+                },
+                "telefone": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "uf": {
+                    "type": "string"
                 }
             }
         },
