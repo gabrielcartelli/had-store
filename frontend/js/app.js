@@ -196,19 +196,26 @@ function exibirChapeus(hats) {
         hatsDiv.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:bold;">Nenhum chapéu encontrado.</p>';
         return;
     }
-    hats.forEach(hat => {
+    // Agrupa os produtos: primeiro com estoque, depois sem estoque
+    const hatsComEstoque = hats.filter(hat => hat.temEstoque !== false);
+    const hatsSemEstoque = hats.filter(hat => hat.temEstoque === false);
+    const hatsOrdenados = [...hatsComEstoque, ...hatsSemEstoque];
+    hatsOrdenados.forEach(hat => {
         const hatCard = document.createElement('div');
         hatCard.className = 'hat-card';
-        hatCard.innerHTML = `
+        let cardHtml = `
             <img src="imagens/chapeu-${hat.id}.jpg" alt="${hat.nome}" onerror="this.src='imagens/logo-hatstore.png'">
             <h3>${hat.nome}</h3>
             <p>Preço: R$ ${hat.price.toFixed(2)}</p>
-            <button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>
         `;
+        if (hat.temEstoque === false) {
+            cardHtml += `<p style="color:red;font-weight:bold;">Indisponível no momento</p>`;
+        } else {
+            cardHtml += `<button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>`;
+        }
+        hatCard.innerHTML = cardHtml;
         hatsDiv.appendChild(hatCard);
     });
-
-    // Adiciona event listeners aos novos botões
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const { id, nome, price } = event.target.dataset;
@@ -347,9 +354,6 @@ function handleCheckout() {
 }
 
 
-//
-// FUNÇÕES UTILITÁRIAS (Loader, Modal)
-//
 function showLoader() {
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'flex';

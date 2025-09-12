@@ -1,6 +1,6 @@
 import { fetchApi } from './api.js';
 import { showLoader, hideLoader, openModal, closeModal } from './app.js';
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Redireciona para login se não estiver autenticado
     if (!localStorage.getItem('jwt_token')) {
         window.location.href = 'auth.html';
@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // PROTEÇÃO DA PÁGINA E CONFIGURAÇÃO INICIAL
     //
     const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
-    
+
     // Monta o resumo do pedido na tela
     montarResumoPedido(carrinho);
-    
+
     // Aplica máscaras aos inputs do formulário
     aplicarMascaras();
 
-    
+
     //
     // EVENT LISTENERS DO FORMULÁRIO
     //
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (form) {
         form.addEventListener('submit', handleFormSubmit);
     }
-    
+
     // Lógica para seleção dos botões de pagamento
     const btnPix = document.getElementById('btn-pix');
     const btnBoleto = document.getElementById('btn-boleto');
@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function montarResumoPedido(itens) {
     const pedidoResumoDiv = document.getElementById('pedido-resumo');
     if (!pedidoResumoDiv) return;
-    
+
     const cupom = (localStorage.getItem('cupom') || '').toUpperCase();
     let total = 0;
-    
+
     // Cria a lista de itens
     let itensHtml = itens.map(item => {
         total += item.price * (item.quantidade || 1);
@@ -60,7 +60,7 @@ function montarResumoPedido(itens) {
     if (cupom === "HATOFF") {
         const desconto = total * 0.20;
         totalComDesconto -= desconto;
-    descontoHtml = `<div class="pedido-desconto">Cupom HATOFF: -R$ ${desconto.toFixed(2)}</div>`;
+        descontoHtml = `<div class="pedido-desconto">Cupom HATOFF: -R$ ${desconto.toFixed(2)}</div>`;
     }
 
     // Monta o HTML final do resumo
@@ -95,13 +95,15 @@ async function handleFormSubmit(event) {
         // 4. Se o pedido for bem-sucedido
         localStorage.removeItem('carrinho'); // Limpa o carrinho
         localStorage.removeItem('cupom'); // Limpa o cupom
-        
+
         exibirCodigoPagamento(pedido.pagamento);
 
     } catch (error) {
         // 5. Trata os erros
-    if (error.message.includes('Cupom HATOFF já utilizado')) {
+        if (error.message.includes('Cupom HATOFF já utilizado')) {
             exibirModalCompraNegada();
+        } else if (error.message.toLowerCase().includes('estoque')) {
+            exibirModalEstoqueInsuficiente(error.message);
         } else {
             console.error('Erro ao finalizar pedido:', error);
             alert(`Erro ao finalizar pedido: ${error.message}`);
@@ -180,7 +182,7 @@ function validaCampo(id, regex, mensagemErro) {
 function selectPagamento(tipo) {
     document.getElementById('btn-pix').classList.remove('selected');
     document.getElementById('btn-boleto').classList.remove('selected');
-    
+
     if (tipo === 'pix') document.getElementById('btn-pix').classList.add('selected');
     if (tipo === 'boleto') document.getElementById('btn-boleto').classList.add('selected');
 
@@ -202,7 +204,7 @@ function exibirCodigoPagamento(metodo) {
     `;
     openModal(titulo, bodyHtml);
 
-    document.getElementById('copiar-codigo').addEventListener('click', function() {
+    document.getElementById('copiar-codigo').addEventListener('click', function () {
         navigator.clipboard.writeText(codigo).then(() => {
             this.innerText = "Copiado!";
             setTimeout(() => { this.innerText = "Copiar código"; }, 2000);
@@ -232,3 +234,30 @@ function aplicarMascaras() {
         $('#numero').mask('000000');
     }
 }
+
+function exibirModalEstoqueInsuficiente(msg) {
+    const bodyHtml = `
+        <p style="color:#e11d48;font-weight:bold;">${msg || 'Não há estoque suficiente para um ou mais produtos do pedido.'}</p>
+        <p>Por favor, revise seu carrinho ou escolha outros produtos disponíveis.</p>
+        <button id="fechar-modal-estoque" class="auth-button" style="background: #444; margin-top: 1rem;">Fechar e voltar à loja</button>
+    `;
+    openModal('Estoque insuficiente', bodyHtml);
+    document.getElementById('fechar-modal-estoque').addEventListener('click', function() {
+        // Tenta extrair o id do produto sem estoque da mensagem do backend
+        let produtoId = null;
+        if (msg) {
+            const match = msg.match(/id\s*:?\s*(\d+)/i);
+            if (match) produtoId = parseInt(match[1]);
+        }
+        let carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+        if (produtoId) {
+            carrinho = carrinho.filter(item => item.id !== produtoId);
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        } else {
+            localStorage.removeItem('carrinho');
+        }
+        closeModal();
+        window.location.href = 'index.html';
+    });
+}
+

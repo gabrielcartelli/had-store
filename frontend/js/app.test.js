@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import { exibirChapeus } from './app.js';
+
 // Mock do localStorage e DOM
 beforeEach(() => {
   localStorage.clear();
