@@ -429,8 +429,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/",
+	Host:             "hat-store-training.fly.dev",
+	BasePath:         "/api/",
 	Schemes:          []string{},
 	Title:            "Hat Store API",
 	Description:      "API da loja de chapéus Hat Store.",
