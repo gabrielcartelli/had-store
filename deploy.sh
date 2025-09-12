@@ -12,15 +12,17 @@ fi
 popd > /dev/null
 
 
-# Rodar testes do frontend (Jest)
+
+# Instala dependências do frontend antes de rodar os testes
 pushd frontend > /dev/null
-FRONTEND_TEST_RESULT=$(npm test -- --json)
+npm install
+FRONTEND_TEST_RESULT=$(npx jest --json)
 popd > /dev/null
 
 # Verificar resultado dos testes do frontend
 if ! echo "$FRONTEND_TEST_RESULT" | grep '"success":true' > /dev/null; then
-    echo "Frontend tests failed. Deployment aborted."
-    exit 1
+  echo "Frontend tests failed. Deployment aborted."
+  exit 1
 fi
 
 # Se todos passaram, faz deploy
