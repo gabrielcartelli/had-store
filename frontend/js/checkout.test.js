@@ -1,6 +1,7 @@
 /**
  * @jest-environment jsdom
  */
+import { exibirModalEstoqueInsuficiente } from './checkout.js';
 
 describe('checkout.js', () => {
   beforeEach(() => {

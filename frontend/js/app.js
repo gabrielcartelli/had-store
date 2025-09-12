@@ -1,7 +1,7 @@
 export { showLoader, hideLoader, openModal, closeModal };
 import { fetchApi } from './api.js';
-    // Botão de carrinho no header abre a sidebar do carrinho
-    const headerCartBtn = document.getElementById('header-cart-btn');
+// Botão de carrinho no header abre a sidebar do carrinho
+const headerCartBtn = document.getElementById('header-cart-btn');
 // Variáveis globais para os dados da aplicação
 let todosChapeus = [];
 let carrinho = [];
@@ -9,7 +9,7 @@ let carrinho = [];
 // Função principal que roda quando o HTML está pronto
 document.addEventListener('DOMContentLoaded', () => {
     // Delegação de evento para garantir que o botão de fechar o carrinho funcione sempre
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target && e.target.id === 'close-cart') {
             const cartSidebar = document.getElementById('cart-sidebar');
             if (cartSidebar) cartSidebar.classList.remove('open');
@@ -123,8 +123,56 @@ document.addEventListener('DOMContentLoaded', () => {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', handleCheckout);
     }
-});
 
+    // Novo menu de filtros moderno
+    const filterForm = document.querySelector('.filter-form-modern');
+    const categoryInputs = document.querySelectorAll('.filter-cat-input');
+    const precoMinInput = document.getElementById('preco-min');
+    const precoMaxInput = document.getElementById('preco-max');
+
+    function getSelectedCategories() {
+        return Array.from(categoryInputs)
+            .filter(input => input.checked)
+            .map(input => input.value);
+    }
+
+    async function aplicarFiltroCategoria() {
+        const selectedCategories = getSelectedCategories();
+        const params = [];
+        if (selectedCategories.length) params.push(`categoria=${selectedCategories.map(encodeURIComponent).join(',')}`);
+        const query = params.length ? `?${params.join('&')}` : '';
+            const hats = await fetchApi(`/hats${query}`);
+            todosChapeus = hats;
+            exibirChapeus(hats);
+    }
+
+    categoryInputs.forEach(input => {
+        input.addEventListener('change', aplicarFiltroCategoria);
+    });
+
+    if (filterForm) {
+        filterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const min = precoMinInput ? precoMinInput.value : '';
+            const max = precoMaxInput ? precoMaxInput.value : '';
+            const selectedCategories = getSelectedCategories();
+            // Monta query params
+            const params = [];
+            if (selectedCategories.length) params.push(`categoria=${selectedCategories.map(encodeURIComponent).join(',')}`);
+            if (min) params.push(`min=${encodeURIComponent(min)}`);
+            if (max) params.push(`max=${encodeURIComponent(max)}`);
+            const query = params.length ? `?${params.join('&')}` : '';
+            // Chama backend
+            try {
+                const hats = await fetchApi(`/hats${query}`);
+                renderHats(hats);
+                showMessage('Filtros aplicados!', 'success');
+            } catch (err) {
+                showMessage('Erro ao aplicar filtros', 'error');
+            }
+        });
+    }
+});
 
 //
 // FUNÇÕES DE DADOS E API
@@ -166,7 +214,7 @@ async function handleConsultaPedidos(event) {
             card.innerHTML = `
                 <strong>Pedido:</strong> ${pedido.nome}<br>
                 <strong>CPF:</strong> ${pedido.cpf}<br>
-                <strong>E-mail:</strong> ${pedido.email}<br>
+                <strong>e-mail:</strong> ${pedido.email}<br>
                 <strong>Pagamento:</strong> ${pedido.pagamento}<br>
                 <strong>Total:</strong> R$ ${pedido.total.toFixed(2)}
                 <div class="pedido-itens">
@@ -196,19 +244,26 @@ function exibirChapeus(hats) {
         hatsDiv.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:bold;">Nenhum chapéu encontrado.</p>';
         return;
     }
-    hats.forEach(hat => {
+    // Agrupa os produtos: primeiro com estoque, depois sem estoque
+    const hatsComEstoque = hats.filter(hat => hat.temEstoque !== false);
+    const hatsSemEstoque = hats.filter(hat => hat.temEstoque === false);
+    const hatsOrdenados = [...hatsComEstoque, ...hatsSemEstoque];
+    hatsOrdenados.forEach(hat => {
         const hatCard = document.createElement('div');
         hatCard.className = 'hat-card';
-        hatCard.innerHTML = `
+        let cardHtml = `
             <img src="imagens/chapeu-${hat.id}.jpg" alt="${hat.nome}" onerror="this.src='imagens/logo-hatstore.png'">
             <h3>${hat.nome}</h3>
             <p>Preço: R$ ${hat.price.toFixed(2)}</p>
-            <button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>
         `;
+        if (hat.temEstoque === false) {
+            cardHtml += `<p style="color:red;font-weight:bold;">Indisponível no momento</p>`;
+        } else {
+            cardHtml += `<button class="add-to-cart-btn" data-id="${hat.id}" data-nome="${hat.nome}" data-price="${hat.price}">Adicionar ao carrinho</button>`;
+        }
+        hatCard.innerHTML = cardHtml;
         hatsDiv.appendChild(hatCard);
     });
-
-    // Adiciona event listeners aos novos botões
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const { id, nome, price } = event.target.dataset;
@@ -347,9 +402,6 @@ function handleCheckout() {
 }
 
 
-//
-// FUNÇÕES UTILITÁRIAS (Loader, Modal)
-//
 function showLoader() {
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'flex';
@@ -373,3 +425,90 @@ function closeModal() {
 }
 // Expondo closeModal globalmente para o onclick no HTML
 window.closeModal = closeModal;
+
+// FILTRO DE CHAPÉUS (categoria e preço)
+document.addEventListener('DOMContentLoaded', () => {
+    const filterForm = document.getElementById('filter-form');
+    if (filterForm) {
+        // Função de filtro
+        function aplicarFiltro() {
+            const categorias = Array.from(filterForm.querySelectorAll('input[name="categoria"]:checked')).map(cb => cb.value);
+            let precoMin = document.getElementById('preco-min').value.trim();
+            let precoMax = document.getElementById('preco-max').value.trim();
+            precoMin = precoMin === '' ? null : Math.max(0, parseInt(precoMin, 10));
+            precoMax = precoMax === '' ? null : Math.max(0, parseInt(precoMax, 10));
+            // Envia para o backend como centavos zerados (ex: 120 -> 120.00)
+            const precoMinStr = precoMin !== null ? (precoMin + '.00') : null;
+            const precoMaxStr = precoMax !== null ? (precoMax + '.00') : null;
+
+            // Validação: mínimo não pode ser maior que máximo
+            if (precoMin !== null && precoMax !== null && precoMin > precoMax) {
+                openModal('Filtro inválido', '<p>O valor mínimo não pode ser maior que o valor máximo.</p>');
+                return;
+            }
+
+            // Termo de busca
+            const termo = (document.getElementById('search-hat')?.value || '').toLowerCase();
+
+            // Monta query string
+            let params = [];
+            if (categorias.length > 0) params.push('categoria=' + encodeURIComponent(categorias.join(',')));
+            if (precoMinStr !== null) params.push('min=' + precoMinStr);
+            if (precoMaxStr !== null) params.push('max=' + precoMaxStr);
+            let url = '/hats';
+            if (params.length > 0) url += '?' + params.join('&');
+
+            showLoader();
+            fetchApi(url).then(hats => {
+                // Filtro de pesquisa (nome) ainda é feito no frontend
+                let filtrados = hats.filter(hat => termo === '' || hat.nome.toLowerCase().includes(termo));
+                exibirChapeus(filtrados);
+            }).catch(() => {
+                openModal('Erro', '<p>Não foi possível carregar os chapéus filtrados.</p>');
+            }).finally(() => {
+                hideLoader();
+            });
+        }
+
+        // Aplica filtro ao marcar/desmarcar qualquer categoria
+        filterForm.querySelectorAll('input[name="categoria"]').forEach(cb => {
+            cb.addEventListener('change', aplicarFiltro);
+        });
+
+        // Aplica filtro de faixa de preço apenas ao clicar em "Aplicar"
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            aplicarFiltro();
+        });
+    }
+});
+
+function showMessage(msg, type = 'info') {
+    let color = '#232323';
+    if (type === 'success') color = '#c9a94b';
+    if (type === 'error') color = '#d9534f';
+    let div = document.getElementById('global-message');
+    if (!div) {
+        div = document.createElement('div');
+        div.id = 'global-message';
+        div.style.position = 'fixed';
+        div.style.top = '18px';
+        div.style.left = '50%';
+        div.style.transform = 'translateX(-50%)';
+        div.style.zIndex = '9999';
+        div.style.padding = '12px 28px';
+        div.style.borderRadius = '8px';
+        div.style.fontFamily = 'Segoe UI, Arial, sans-serif';
+        div.style.fontWeight = 'bold';
+        div.style.fontSize = '1.08em';
+        div.style.boxShadow = '0 2px 12px #0006';
+        document.body.appendChild(div);
+    }
+    div.textContent = msg;
+    div.style.background = color;
+    div.style.color = '#fff';
+    div.style.opacity = '1';
+    setTimeout(() => {
+        div.style.opacity = '0';
+    }, 2200);
+}
