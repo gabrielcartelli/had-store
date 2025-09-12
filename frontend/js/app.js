@@ -1,3 +1,4 @@
+export { showLoader, hideLoader, openModal, closeModal };
 import { fetchApi } from './api.js';
     // Botão de carrinho no header abre a sidebar do carrinho
     const headerCartBtn = document.getElementById('header-cart-btn');
@@ -52,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // INICIALIZAÇÃO DA PÁGINA
     //
     carregarChapeus();
-    document.getElementById('search-hat').addEventListener('input', filtrarChapeus);
+    const searchHatInput = document.getElementById('search-hat');
+    if (searchHatInput) {
+        searchHatInput.addEventListener('input', filtrarChapeus);
+    }
 
     const carrinhoSalvo = localStorage.getItem('carrinho');
     if (carrinhoSalvo) {

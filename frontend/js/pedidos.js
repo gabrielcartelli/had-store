@@ -1,3 +1,5 @@
+import { fetchApi } from './api.js';
+import { showLoader, hideLoader } from './app.js';
 // frontend/js/pedidos.js
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,3 +1,5 @@
+import { fetchApi } from './api.js';
+import { showLoader, hideLoader, openModal, closeModal } from './app.js';
 document.addEventListener('DOMContentLoaded', function() {
     // Redireciona para login se não estiver autenticado
     if (!localStorage.getItem('jwt_token')) {
