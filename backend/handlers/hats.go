@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/gorilla/mux"
 )
 
 // Verifica UUID de desenvolvimento
@@ -377,4 +379,47 @@ func ConsultarPedidos(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(pedidosFiltrados)
+}
+
+// PATCH /api/hats/{id}/estoque
+// EditarEstoqueHat godoc
+// @Summary Edita o estoque de um chapéu
+// @Description Atualiza a quantidade de estoque de um chapéu pelo ID
+// @Tags hats
+// @Accept json
+// @Produce json
+// @Param id path int true "ID do chapéu"
+// @Param body body handlers.EstoquePayload true "Nova quantidade de estoque (0 a 200)"
+// @Success 200 {object} Hat
+// @Failure 400 {string} string "Quantidade inválida ou erro de requisição"
+// @Failure 404 {string} string "Chapéu não encontrado"
+// @Router /hats/{id}/estoque [patch]
+func EditarEstoqueHat(w http.ResponseWriter, r *http.Request) {
+	idStr := mux.Vars(r)["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+	var p EstoquePayload
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		http.Error(w, "JSON inválido", http.StatusBadRequest)
+		return
+	}
+	if p.Quantidade < 0 || p.Quantidade > 200 {
+		http.Error(w, "Quantidade deve ser entre 0 e 200", http.StatusBadRequest)
+		return
+	}
+	for i := range hats {
+		if hats[i].ID == id {
+			hats[i].Quantidade = p.Quantidade
+			json.NewEncoder(w).Encode(hats[i])
+			return
+		}
+	}
+	http.Error(w, "Chapéu não encontrado", http.StatusNotFound)
+}
+
+type EstoquePayload struct {
+	Quantidade int `json:"quantidade"`
 }
